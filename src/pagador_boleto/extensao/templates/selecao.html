@@ -1,0 +1,78 @@
+{% load filters %}
+        {% if padrao_novo %}
+                            {% for pagamento_banco in pagamento.bancos_ativos_na_conta %}
+                                <li class="pagamento lista-item" id="pagamento_{{ pagamento.id }}-{{ pagamento_banco.id }}" data-id="{{ pagamento.id }}-{{ pagamento_banco.id }}" data-nome="{{ pagamento.nome }}">
+                                    <div class="radio_button">
+                                        <input data-desconto_tipo="{{pagamento.desconto_tipo}}" data-desconto="{{pagamento.desconto_valor|floatformat:'%.2f'}}" class="forma_pagamento" type="radio" value="{{ pagamento.id }}" name="forma_pagamento" {% if forma_pagamento == pagamento.id|stringformat:"s" %}checked="checked"{% endif %} rel="{{ pagamento_banco.id }}" />
+                                    </div>
+                                    <div class="pagamento_imagem">
+                                        <img style="margin-top: 2px;" src="{{ STATIC_URL }}img/formas-de-pagamento/checkout-deposito-logo.png" alt="{{pagamento.nome}}" />
+                                        {% if pagamento.codigo == 'deposito' and bancos_deposito %}
+                                        <ul class="">
+                                            <li style="font-weight: bold; position: relative;">
+                                                <img style="margin: 0 0 0 10px; vertical-align: middle; {% if pagamento.desconto and pagamento.desconto_valor %}margin-top: 4px;{% endif %}" src="{{ STATIC_URL }}img/formas-de-pagamento/{{ pagamento_banco.imagem }}" alt="{{ pagamento_banco.banco.nome }}">
+                                                <span style="margin-left: 6px; {% if pagamento.desconto and pagamento.desconto_valor %}margin: -5px 0 0 6px;{% endif %}">{{ pagamento_banco.banco.nome }}</span>
+                                                {% if pagamento.desconto and pagamento.desconto_valor %}
+                                                {% if request.session.cupom and not request.session.cupom_cumulativo %}
+                                                {% else %}
+                                                    <strong style="color: red; position: absolute; left: 50px; margin-top: 8px; font-size: 11px;">Desconto de
+                                                    {% if pagamento.desconto_tipo == 'porcentagem'%}
+                                                        {{pagamento.desconto_valor|floatformat:'%.2f'}}%
+                                                    {% else %}
+                                                        R$ {{pagamento.desconto_valor|formatar_decimal_br}}
+                                                    {% endif %}
+                                                    </strong>
+                                                {% endif %}
+                                                {% endif %}
+                                            </li>
+                                        </ul>
+                                        {% endif %}
+                                    </div>
+                                </li>
+                            {% endfor %}
+                            <input type="hidden" name="pagamento_banco_id" value="" />
+        {% else %}
+
+                          {% for pagamento_banco in pagamento.bancos_ativos_na_conta %}
+                            <div class="accordion-group {{ pagamento.codigo }}">
+                              <label for="label-{{ pagamento_banco.nome|slugify }}" class="accordion-heading" data-toggle="collapse" data-target="#{{ pagamento_banco.nome|slugify }}" data-parent="#formasPagamento" id="pagamento{{ pagamento.id }}">
+                                <span class="radio-conteiner">
+                                  <input type="radio" name="forma_pagamento" id="label-{{ pagamento_banco.nome|slugify }}"
+                                    {% if forma_pagamento == pagamento.id|stringformat:"s" %}checked="checked"{% endif %}
+                                    value="{{ pagamento.id }}" data-pagamento-banco-id="{{ pagamento_banco.id }}" data-desconto-valor="{{ pagamento.desconto_valor|floatformat:'%.2f' }}" data-desconto-tipo="porcentagem">
+                                </span>
+                                <span class="forma-conteiner text-right">
+                                  <img src="{{ STATIC_URL }}novo-template/img/bandeiras/forma-{{ pagamento_banco.nome|slugify }}.png" title="{{ pagamento_banco.nome }}" alt="{{ pagamento_banco.nome }}">
+                                  {% if pagamento.desconto and pagamento.desconto_valor %}
+                                  {% if request.session.cupom  and not request.session.cupom_cumulativo %}
+                                  {% else %}
+                                    {% if pagamento.desconto_tipo == 'porcentagem' %}
+                                      <span class="cor-secundaria pagamento-desconto" >
+                                        Desconto de até
+                                        <b class="cor-principal" >{{ pagamento.desconto_valor|floatformat:'%.2f' }}%</b>
+                                      </span>
+                                    {% else %}
+                                      <span class="cor-secundaria pagamento-desconto">
+                                        Desconto de até
+                                        <b class="cor-principal" data-desconto-valor="{{ pagamento.desconto_valor|floatformat:'%.2f' }}" data-desconto-tipo="fixo">>R$ {{ pagamento.desconto_valor|formatar_decimal_br }}</b>
+                                      </span>
+                                    {% endif %}
+                                  {% endif %}
+                                  {% else %}
+                                    <!--<span class="cor-secundaria">até <b class="cor-principal">18x</b> 1.99% a.m</span>-->
+                                  {% endif %}
+                                </span>
+                              </label>
+                              <div id="{{ pagamento_banco.nome|slugify }}" class="collapse">
+                                <div class="accordion-inner">
+                                  <div class="text-right">
+                                     <span>Valor</span>
+                                      <h5 class="titulo cor-principal text-right pagamento-valor preco-carrinho-total">
+                                        R$ {{ carrinho_subtotal|formatar_decimal_br }}
+                                      </h5>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          {% endfor %}
+        {% endif %}
