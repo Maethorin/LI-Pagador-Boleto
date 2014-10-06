@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 
-from pagador.configuracao.cadastro import CampoFormulario, FormularioBase, TipoDeCampo, CadastroBase, SelecaoBase
+from pagador.configuracao.cadastro import CampoFormulario, FormularioBase, TipoDeCampo, CadastroBase, SelecaoBase, FormatoDeCampo
 from pagador.configuracao.cliente import Script, TipoScript
 from pagador.configuracao.models import Banco, BoletoCarteira
 
@@ -32,8 +32,8 @@ class MeioPagamentoCadastro(CadastroBase):
     def contexto(self):
         bancos = Banco.objects.prefetch_related('carteiras').all()
         carteiras = BoletoCarteira.objects.filter(ativo=True)
-        carteira_choices = [(x.id, x.nome) for x in carteiras]
-        banco_choices = [x for x in set([(y.banco.id, y.banco.nome) for y in carteiras])]
+        carteira_choices = [{"id": x.id, "nome": x.nome} for x in carteiras]
+        banco_choices = [{"id": x[0], "nome": x[1]} for x in set([(y.banco.id, y.banco.nome) for y in carteiras])]
         banco_carteira_json = {}
         for banco in bancos:
             carteiras = banco.carteiras.filter(ativo=True)
@@ -47,6 +47,7 @@ class MeioPagamentoCadastro(CadastroBase):
         return {
             "contexto": self.contexto,
             "html": [
+                self.alerta.to_dict(),
                 self.descricao_para_lojista.to_dict(),
                 self.campos_boleto.to_dict()
             ]
@@ -54,7 +55,7 @@ class MeioPagamentoCadastro(CadastroBase):
 
 
 class Formulario(FormularioBase):
-    json = CampoFormulario("json", "", requerido=True, ordem=1, tipo=TipoDeCampo.oculto)
+    json = CampoFormulario("json", "", requerido=True, ordem=1, tipo=TipoDeCampo.oculto, formato=FormatoDeCampo.json)
 
 
 class MeioPagamentoEnvio(object):
