@@ -45,7 +45,7 @@ $(document).ready(function() {
         if ($json.val()) {
             jsonResultado = JSON.parse($json.val());
             for (var campo in jsonResultado) {
-                if (campo != "linha_1") {
+                if (campo != "linha_1" && campo != "desconto_valor" && campo != "aplicar_no_total") {
                     var $campo = $("#id_" + campo);
                     $campo.prop("disabled", false);
                     $campo.val(jsonResultado[campo]);
@@ -111,10 +111,16 @@ $(document).ready(function() {
             }
         }
         for (var campo in jsonResultado) {
-            if (campo != "linha_1") {
-                var $campo = $("#id_" + campo);
-                jsonResultado[campo] = $campo.val();
+            var $campo = $("#id_" + campo);
+            var valor = $campo.val();
+            if (campo == "desconto_valor") {
+                valor = valor.replace(/\./g, "");
+                valor = valor.replace(/\,/g, ".");
             }
+            if (campo == "aplicar_no_total") {
+                valor = $campo.is(":checked");
+            }
+            jsonResultado[campo] = valor;
         }
         $("#id_json").val(JSON.stringify(jsonResultado));
     });
@@ -154,9 +160,6 @@ $(document).ready(function() {
             <button type="button" id="emitirBoletoTeste" class="btn btn-default">
                 <span class="glyphicon glyphicon-barcode"></span> Gerar boleto de teste
             </button>
-            <!--<a id="emitirBoletoTeste" class="btn btn-default" href="#modalBoletoTeste" data-toggle="modal">-->
-                <!--<span class="glyphicon glyphicon-barcode"></span> Gerar boleto de teste-->
-            <!--</a>-->
         </p>
     </div>
 {% endif %}
@@ -298,27 +301,6 @@ $(document).ready(function() {
     <div class="col-sm-6">
         <input class="form-control" id="id_linha_3" maxlength="64" name="linha_3" value="" type="text" disabled="disabled" />
         <ul class="errorlist" style="display: none"></ul>
-    </div>
-</div>
-<h4>Descontos</h4>
-<div class="form-group ">
-    <label for="id_desconto_valor" class="control-label col-sm-3">Desconto aplicado:</label>
-    <div class="col-sm-6">
-        <div class="input-group">
-            <input class="form-control" id="id_desconto_valor" name="desconto_valor" value="" type="text" disabled="disabled" />
-            <span class="input-group-addon">%</span>
-        </div>
-        <ul class="errorlist" style="display: none"></ul>
-    </div>
-</div>
-<div class="form-group ">
-    <label for="id_aplicar_no_total" class="control-label col-sm-3">Aplicar no total?:</label>
-    <div class="col-sm-6">
-        <select class="form-control" id="id_aplicar_no_total" name="aplicar_no_total" disabled="disabled">
-            <option value="True" selected="selected">Sim</option>
-            <option value="False">Não</option>
-        </select>
-        <p class="help-block">Aplicar desconto no total da compra (incluir por exemplo o frete).</p>
     </div>
 </div>
 

@@ -118,6 +118,8 @@ class ValidarJson(ValidadorBase):
 
 class Formulario(FormularioBase):
     json = CampoFormulario("json", "", requerido=True, ordem=1, tipo=TipoDeCampo.oculto, formato=FormatoDeCampo.json, validador=ValidarJson)
+    desconto_valor = CampoFormulario("desconto_valor", u"Desconto aplicado", requerido=False, ordem=2, tipo=TipoDeCampo.decimal)
+    aplicar_no_total = CampoFormulario("aplicar_no_total", u"Aplicar no total?", requerido=False, ordem=3, tipo=TipoDeCampo.boleano, texto_ajuda=u"Aplicar desconto no total da compra (incluir por exemplo o frete).")
 
 
 class MeioPagamentoEnvio(object):
