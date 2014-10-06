@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
+import json
 import os
 
-from pagador.configuracao.cadastro import CampoFormulario, FormularioBase, TipoDeCampo, CadastroBase, SelecaoBase, FormatoDeCampo
+from pagador.configuracao.cadastro import CampoFormulario, FormularioBase, TipoDeCampo, CadastroBase, SelecaoBase, FormatoDeCampo, ValidadorBase
 from pagador.configuracao.cliente import Script, TipoScript
 from pagador.configuracao.models import Banco, BoletoCarteira
 
@@ -54,8 +55,58 @@ class MeioPagamentoCadastro(CadastroBase):
         }
 
 
+class ValidarJson(ValidadorBase):
+    def __init__(self, valor):
+        super(ValidarJson, self).__init__(valor)
+        self.erros = {}
+
+    @property
+    def mensagem(self):
+        return self.erros
+
+    @property
+    def eh_valido(self):
+        try:
+            data = json.loads(self.valor)
+        except ValueError:
+            self.erros["json"] = "Os dados enviados não puderam ser reconhecidos."
+            return False
+
+        def so_numeros(s):
+            return u''.join([x for x in s if x.isdigit()])
+
+        for i in ['empresa_cnpj', 'banco_agencia', 'banco_conta', 'banco_convenio']:
+            if data.get(i):
+                valor = so_numeros(data[i])
+                if i != 'empresa_cnpj' and not valor:
+                    self.erros[i] = u"Informação inválida. Deve conter apenas digitos."
+                if i == 'empresa_cnpj' and len(valor) < 14:
+                    self.erros['empresa_cnpj'] = u"CNPJ da empresa inválido."
+
+        if data.get('desconto_valor', None):
+            try:
+                valor = float(data['desconto_valor'])
+                if valor > 100.0 or valor < 0.0:
+                    self.erros['desconto_valor'] = u"Porcentagem inválida. Insira um valor entre 0% e 100%."
+            except ValueError:
+                self.erros['desconto_valor'] = u"Porcentagem inválida. Insira um valor entre 0% e 100%."
+        bancos_limites = {"2": 5, "1": 7, "6": 8, "4": 6}
+        if data.get('banco_conta') and data.get('banco') and bancos_limites.get(data['banco']):
+            conta = data['banco_conta']
+            tamanho_atual = len(conta)
+            tamanho_necessario = bancos_limites[data['banco']]
+            if tamanho_atual != tamanho_necessario:
+                self.erros["banco_conta"] = "Certifique-se de que o valor tenha %s caracteres (ele possui %s)." % (tamanho_necessario, tamanho_atual)
+
+        endereco = u'%s - %s / %s' % (data.get('empresa_endereco'), data.get('empresa_cidade'), data.get('empresa_estado'))
+        if len(endereco) > 80:
+            self.erros["empresa_endereco"] = "O endereço, cidade e estado juntos não podem passar de 80 caracteres, reduza ou abrevie o endereço."
+
+        return not self.erros
+
+
 class Formulario(FormularioBase):
-    json = CampoFormulario("json", "", requerido=True, ordem=1, tipo=TipoDeCampo.oculto, formato=FormatoDeCampo.json)
+    json = CampoFormulario("json", "", requerido=True, ordem=1, tipo=TipoDeCampo.oculto, formato=FormatoDeCampo.json, validador=ValidarJson)
 
 
 class MeioPagamentoEnvio(object):

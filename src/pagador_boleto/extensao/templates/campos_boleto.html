@@ -1,8 +1,14 @@
 {% load filters %}
 
 <script type="text/javascript">
-var banco_carteira_json = {% autoescape off %}{{ banco_carteira_json|to_json }}{% endautoescape %};
-var json_resultado = {};
+var bancoCarteiraJson = {% autoescape off %}{{ banco_carteira_json|to_json }}{% endautoescape %};
+{% if erros_validacao %}
+var errosValidacao = {% autoescape off %}{{ erros_validacao|to_json }}{% endautoescape %};
+errosValidacao = errosValidacao.erros.json;
+{% else %}
+var errosValidacao = {};
+{% endif %}
+var jsonResultado = {desconto_valor: null, empresa_estado: null, banco_agencia: null, empresa_beneficiario: null, carteira: null, aplicar_no_total: null, linha_2: null, empresa_endereco: null, empresa_cidade: null, linha_1: null, linha_3: null, banco_convenio: null, empresa_cnpj: null, banco: null, banco_conta: null};
 var requeridos = ["empresa_cnpj", "empresa_beneficiario", "empresa_endereco", "empresa_estado", "empresa_cidade", "banco", "carteira", "banco_agencia", "banco_conta"];
 $(document).ready(function() {
 
@@ -10,9 +16,9 @@ $(document).ready(function() {
     var alterar_carteiras = function(banco_id) {
         var carteira_select = $('#id_carteira');
         var carteiras = undefined;
-        for (var i in banco_carteira_json) {
+        for (var i in bancoCarteiraJson) {
             if (i == banco_id) {
-                carteiras = banco_carteira_json[banco_id];
+                carteiras = bancoCarteiraJson[banco_id];
             }
         }
         carteira_select.empty();
@@ -37,14 +43,21 @@ $(document).ready(function() {
     var preencheCampos = function() {
         var $json = $("#id_json");
         if ($json.val()) {
-            json_resultado = JSON.parse($json.val());
-            for (var campo in json_resultado) {
+            jsonResultado = JSON.parse($json.val());
+            for (var campo in jsonResultado) {
                 if (campo != "linha_1") {
                     var $campo = $("#id_" + campo);
                     $campo.prop("disabled", false);
-                    $campo.val(json_resultado[campo]);
+                    $campo.val(jsonResultado[campo]);
                     if (campo == "banco") {
                         $campo.change();
+                    }
+                    if (errosValidacao.hasOwnProperty(campo)) {
+                        var $formGroup = $campo.parents(".form-group");
+                        $formGroup.addClass("has-error");
+                        $formGroup.find(".errorlist li").remove();
+                        $formGroup.find(".errorlist").append("<li>" + errosValidacao[campo] + "</li>");
+                        $formGroup.find(".errorlist").show();
                     }
                 }
             }
@@ -80,6 +93,8 @@ $(document).ready(function() {
             if (!$campoRequerido.val()) {
                 tem_erro = true;
                 $formGroup.addClass("has-error");
+                $formGroup.find(".errorlist li").remove();
+                $formGroup.find(".errorlist").append("<li>Este campo é obrigatório</li>");
                 $formGroup.find(".errorlist").show();
             }
         }
@@ -89,13 +104,13 @@ $(document).ready(function() {
             $alertaErro.prependTo("#mainContent").show();
             return false
         }
-        for (var campo in json_resultado) {
+        for (var campo in jsonResultado) {
             if (campo != "linha_1") {
                 var $campo = $("#id_" + campo);
-                json_resultado[campo] = $campo.val();
+                jsonResultado[campo] = $campo.val();
             }
         }
-        $("#id_json").val(JSON.stringify(json_resultado));
+        $("#id_json").val(JSON.stringify(jsonResultado));
     });
 });
 </script>
@@ -226,6 +241,7 @@ $(document).ready(function() {
     <div class="col-sm-6">
         <input class="form-control" id="id_banco_convenio" maxlength="7" name="banco_convenio" value="" type="text" disabled="disabled" />
         <p class="help-block">Preencha a código do convênio.</p>
+        <ul class="errorlist" style="display: none"></ul>
     </div>
 </div>
 
@@ -235,18 +251,21 @@ $(document).ready(function() {
     <div class="col-sm-6">
         <input class="form-control" disabled="disabled" id="id_linha_1" maxlength="64" name="linha_1" type="text" value="SR CAIXA NÃO ACEITAR APÓS VENCIMENTO." />
         <p class="help-block">Esta linha não pode ser alterada.</p>
+        <ul class="errorlist" style="display: none"></ul>
     </div>
 </div>
 <div class="form-group ">
     <label for="id_linha_2" class="control-label col-sm-3">Linha 2:</label>
     <div class="col-sm-6">
         <input class="form-control" id="id_linha_2" maxlength="64" name="linha_2" value="" type="text" disabled="disabled" />
+        <ul class="errorlist" style="display: none"></ul>
     </div>
 </div>
 <div class="form-group ">
     <label for="id_linha_3" class="control-label col-sm-3">Linha 3:</label>
     <div class="col-sm-6">
         <input class="form-control" id="id_linha_3" maxlength="64" name="linha_3" value="" type="text" disabled="disabled" />
+        <ul class="errorlist" style="display: none"></ul>
     </div>
 </div>
 <h4>Descontos</h4>
@@ -257,6 +276,7 @@ $(document).ready(function() {
             <input class="form-control" id="id_desconto_valor" name="desconto_valor" value="" type="text" disabled="disabled" />
             <span class="input-group-addon">%</span>
         </div>
+        <ul class="errorlist" style="display: none"></ul>
     </div>
 </div>
 <div class="form-group ">
