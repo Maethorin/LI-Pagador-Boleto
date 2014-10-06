@@ -123,7 +123,6 @@ $(document).ready(function() {
         escondeAlertas();
         var url = "https://{{ request.get_host }}{% url 'config_pagamento_configuracao_complemento' pagamento_id=pagamento.id tipo='BoletoTeste' metodo='GET' %}";
         $.getJSON(url).done(function(data) {
-            console.log(data);
             if (data.sucesso) {
                 $("#modalBoletoTeste").find(".corpo").html(data.content);
                 $('#modalBoletoTeste').modal('show')
