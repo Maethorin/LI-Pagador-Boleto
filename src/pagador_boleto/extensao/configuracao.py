@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 import json
 import os
+from datetime import date, timedelta
 
 from pagador.configuracao.cadastro import CampoFormulario, FormularioBase, TipoDeCampo, CadastroBase, SelecaoBase, FormatoDeCampo, ValidadorBase
 from pagador.configuracao.cliente import Script, TipoScript
 from pagador.configuracao.models import Banco, BoletoCarteira
+from pagador_boleto.extensao.requisicao import EnviarPedido, TipoBoleto
 
 
 def caminho_do_arquivo_de_template(arquivo):
@@ -18,7 +20,7 @@ class MeioPagamentoCadastro(CadastroBase):
     @property
     def alerta(self):
         script = Script(tipo=TipoScript.html, nome="alerta")
-        script.adiciona_linha('<div class="alert alert-info" style="margin-top: 20px;">')
+        script.adiciona_linha('<div id="alertaAviso" class="alert alert-info" style="margin-top: 20px;">')
         script.adiciona_linha(u'    <h4><strong>ATENÇÃO:</strong> Antes de habilitar o pagamento via Boleto Bancário é necessário efetuar a liberação da carteira bancário junto ao seu gerente.</h4>')
         script.adiciona_linha('</div>')
         return script
@@ -54,16 +56,25 @@ class MeioPagamentoCadastro(CadastroBase):
             ]
         }
 
+    def complemento(self, dados):
+        if dados["tipo"] != "BoletoTeste":
+            return {"content": {"erro": "Tipo invalido"}, "status": 400}
+        enviar = EnviarPedido(pedido=None, dados={}, configuracao_pagamento=self.configuracao)
+        hoje = date.today()
+        vencimento = hoje + timedelta(days=5)
+        try:
+            return {"content": enviar.emitir_boleto(
+                data_processamento=hoje, data_documento=hoje, data_vencimento=vencimento,
+                valor_documento=1.00, sacado='CLIENTE DE TESTE', numero_documento='999999',
+                nosso_numero=None, tipo=TipoBoleto.html
+            ), "status": 200}
+        except BoletoCarteira.DoesNotExist:
+            return {"content": {"erro": u"Por favor atualize as suas informações, salve e tente novamente."}, "status": 400}
+        except ValueError:
+            return {"content": {"erro": u"Não foi possível gerar o boleto. Por favor atualize as suas informações, salve e tente novamente."}, "status": 400}
+
 
 class ValidarJson(ValidadorBase):
-    def __init__(self, valor):
-        super(ValidarJson, self).__init__(valor)
-        self.erros = {}
-
-    @property
-    def mensagem(self):
-        return self.erros
-
     @property
     def eh_valido(self):
         try:

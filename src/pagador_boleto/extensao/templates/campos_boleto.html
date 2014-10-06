@@ -81,28 +81,34 @@ $(document).ready(function() {
     $('#id_empresa_cnpj').mask('99.999.999/9999-99');
     preencheCampos();
 
+    var escondeAlertas = function() {
+        $(".alert").not("#alertaAviso").not("#alertaBotaoTeste").not("#alertaInfo").hide();
+    };
+
     $("#formPagamentoEditar").submit(function(e) {
-        var tem_erro = false;
-        var $alertaErro = $("#alertaErro");
-        $alertaErro.hide();
-        for (var indice in requeridos) {
-            var $campoRequerido = $("#id_" + requeridos[indice]);
-            var $formGroup = $campoRequerido.parents(".form-group");
-            $formGroup.removeClass("has-error");
-            $formGroup.find(".errorlist").hide();
-            if (!$campoRequerido.val()) {
-                tem_erro = true;
-                $formGroup.addClass("has-error");
-                $formGroup.find(".errorlist li").remove();
-                $formGroup.find(".errorlist").append("<li>Este campo é obrigatório</li>");
-                $formGroup.find(".errorlist").show();
+        escondeAlertas();
+        if ($("#id_ativo").val() == 'True') {
+            var tem_erro = false;
+            for (var indice in requeridos) {
+                var $campoRequerido = $("#id_" + requeridos[indice]);
+                var $formGroup = $campoRequerido.parents(".form-group");
+                $formGroup.removeClass("has-error");
+                $formGroup.find(".errorlist").hide();
+                if (!$campoRequerido.val()) {
+                    tem_erro = true;
+                    $formGroup.addClass("has-error");
+                    $formGroup.find(".errorlist li").remove();
+                    $formGroup.find(".errorlist").append("<li>Este campo é obrigatório</li>");
+                    $formGroup.find(".errorlist").show();
+                }
             }
-        }
-        if (tem_erro) {
-            e.preventDefault();
-            $("html, body").animate({scrollTop : 0 });
-            $alertaErro.prependTo("#mainContent").show();
-            return false
+            if (tem_erro) {
+                e.preventDefault();
+                $("html, body").animate({scrollTop : 0 });
+                var $alertaErro = $("#alertaErro");
+                $alertaErro.prependTo("#mainContent").show();
+                return false
+            }
         }
         for (var campo in jsonResultado) {
             if (campo != "linha_1") {
@@ -112,6 +118,23 @@ $(document).ready(function() {
         }
         $("#id_json").val(JSON.stringify(jsonResultado));
     });
+
+    $("#emitirBoletoTeste").click(function() {
+        escondeAlertas();
+        var url = "https://{{ request.get_host }}{% url 'config_pagamento_configuracao_complemento' pagamento_id=pagamento.id tipo='BoletoTeste' metodo='GET' %}";
+        $.getJSON(url).done(function(data) {
+            console.log(data);
+            if (data.sucesso) {
+                $("#modalBoletoTeste").find(".corpo").html(data.content);
+                $('#modalBoletoTeste').modal('show')
+            }
+            else {
+                var $alertaBoletoTeste = $("#alertaBoletoTeste");
+                $alertaBoletoTeste.find(".texto-erro").text(data.content.erro);
+                $alertaBoletoTeste.prependTo("#mainContent").show();
+            }
+        });
+    })
 });
 </script>
 <div id="alertaErro" class="alert alert-danger" style="display: none;">
@@ -119,12 +142,22 @@ $(document).ready(function() {
     <h4>Existem erros nos dados enviados. Corrija os campos marcados e tente novamente.</h4>
 </div>
 
-{% if pagamento_configuracao and pagamento_configuracao.json %}
-    <div class="alert alert-success">
+<div id="alertaBoletoTeste" class="alert alert-danger" style="display: none;">
+    <a class="close" data-dismiss="alert">×</a>
+    <h4 class="texto-erro"></h4>
+</div>
+
+{% if pagamento.configurado %}
+    <div class="alert alert-success" id="alertaBotaoTeste">
         <h4>Emitir boleto de teste</h4>
         <p>Para testar as configurações de pagamento faça a emissão de um boleto de teste e verifique se o boleto foi gerado corretamente.</p>
         <p>
-            <a href="https://{{ request.get_host }}{% url 'config_pagamento_configuracao_emitir_boleto_teste' %}" class="btn btn-default" target="_blank"><span class="glyphicon glyphicon-barcode"></span> Gerar boleto de teste</a>
+            <button type="button" id="emitirBoletoTeste" class="btn btn-default">
+                <span class="glyphicon glyphicon-barcode"></span> Gerar boleto de teste
+            </button>
+            <!--<a id="emitirBoletoTeste" class="btn btn-default" href="#modalBoletoTeste" data-toggle="modal">-->
+                <!--<span class="glyphicon glyphicon-barcode"></span> Gerar boleto de teste-->
+            <!--</a>-->
         </p>
     </div>
 {% endif %}
@@ -290,6 +323,25 @@ $(document).ready(function() {
     </div>
 </div>
 
-<div class="alert alert-info">
+<div class="alert alert-info" id="alertaInfo">
     <h4>Verifique todos os dados com atenção. Se algum campo for preenchido incorretamente o Boleto Bancário poderá não ser emitido ou, em alguns casos, o pagamento não poderá ser corretamente identificado. Após salvar, imprima o boleto de teste e faça o pagamento do mesmo para garantir o funcionamento.</h4>
+</div>
+
+<div id="modalBoletoTeste" class="modal fade">
+	<div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="no-margin">Boleto de teste</h4>
+            </div>
+            <div class="modal-body corpo">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="button btn btn-default" data-dismiss="modal" aria-hidden="true">
+                    <span class="glyphicon glyphicon-remove"></span>
+                    Fechar
+                </button>
+            </div>
+        </div>
+	</div>
 </div>
