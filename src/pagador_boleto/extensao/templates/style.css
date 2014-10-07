@@ -21,3 +21,6 @@
 .alert-message-notice {background-color: #FCFCDD;border-color: #BDBD89;}
 .alert-message-notice h3 {color: #444;}
 .msg-success, .msg-danger {display: none;}
+.botoes-boleto {margin-top: 20px;}
+.linha-digitavel {margin-top: 20px;}
+.linha-digitavel code {font-size: 16px;}
