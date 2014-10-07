@@ -12,7 +12,7 @@ $(function() {
         $boletoMensagem.removeClass("alert-message-success");
         $boletoMensagem.removeClass("alert-message-danger");
         $boletoMensagem.addClass("alert-message-warning");
-        var url_pagar = '{% url_loja "checkout_pagador" pedido.numero pagamento.id %}?tipo_boleto=linha_digitavel';
+        var url_pagar = '{% url_loja "checkout_pagador" pedido.numero pagamento.id %}?formato=linha_digitavel';
         $.getJSON(url_pagar)
             .fail(function (data) {
                 exibeMensagemErro(data.status, data.content);
@@ -21,7 +21,7 @@ $(function() {
                 console.log(data);
                 if (data.sucesso) {
                     $("#aguarde").hide();
-                    exibeMensagemSucesso(data.content.boleto)
+                    exibeMensagemSucesso(data.content)
                 }
                 else {
                     exibeMensagemErro(data.status, data.content);
@@ -37,12 +37,12 @@ $(function() {
         $boletoMensagem.find(".msg-danger").show();
     }
 
-    function exibeMensagemSucesso(boleto) {
+    function exibeMensagemSucesso(linha_digitavel) {
         $boletoMensagem.find(".msg-warning").hide();
         $boletoMensagem.toggleClass("alert-message-warning alert-message-success");
         var $success = $boletoMensagem.find(".msg-success");
         var $dadosBoleto = $success.find("#successMessage");
-        $dadosBoleto.find("#linhaDigitavel").text(boleto.linha_digitavel);
+        $dadosBoleto.find("#linhaDigitavel").text(linha_digitavel);
         $dadosBoleto.show();
         $success.show();
     }

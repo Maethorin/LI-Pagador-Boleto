@@ -1,4 +1,4 @@
-
+{% load filters %}
 <div class="boleto-mensagem alert-message alert-message-warning">
     <div class="msg-warning">
         <p><img src="{{ STATIC_URL }}img/formas-de-pagamento/boleto-maior-logo.png"></p>
@@ -25,8 +25,8 @@
                     <code id="linhaDigitavel"></code>
                 </div>
                 <div class="botoes-boleto">
-                    <button id="imprimirBoleto" type="button" class="botao principal"><i class="icon-print fundo-principal"></i> Imprimr Boleto</button>
-                    <button id="downloadBoleto" type="button" class="botao principal"><i class="icon-download fundo-principal"></i> Download Boleto</button>
+                    <a href="{% url_loja 'checkout_pagador' pedido.numero pagamento.id %}?formato=html" id="imprimirBoleto" class="botao principal" target="_blank"><i class="icon-print fundo-principal"></i> Imprimr Boleto</a>
+                    <a href="{% url_loja 'checkout_pagador' pedido.numero pagamento.id %}?formato=pdf" id="downloadBoleto" class="botao principal" target="_blank"><i class="icon-download fundo-principal"></i> Download Boleto</a>
                 </div>
             </div>
         </div>

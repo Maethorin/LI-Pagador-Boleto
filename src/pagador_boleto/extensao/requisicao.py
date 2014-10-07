@@ -44,25 +44,16 @@ class EnviarPedido(Enviar):
         if self.pedido.pagamento.codigo != 'boleto':
             return {"content": "Não foi encontrada forma de pagamento usando boleto bancário para o pedido {} na conta {}".format(self.pedido.numero, self.pedido.conta_id), "status": 404, "reenviar": False}
         sacado = [self.pedido.endereco_entrega.nome, self.endereco_completo]
-        boleto = {}
-        resultado = self.emitir_boleto(
+        conteudo = self.emitir_boleto(
             self.pedido.data_criacao.date(),
             self.pedido.data_criacao.date(),
             self.pedido.data_criacao.date() + datetime.timedelta(days=5),
             self.pedido.valor_total,
             sacado, self.pedido.numero,
-            tipo=self.dados["tipo_boleto"]
+            tipo=self.dados["formato"]
         )
-        if self.dados["tipo_boleto"] == TipoBoleto.linha_digitavel:
-            boleto = {"linha_digitavel": resultado}
-        if self.dados["tipo_boleto"] == TipoBoleto.html:
-            boleto = {"html": resultado}
-        if self.dados["tipo_boleto"] == TipoBoleto.pdf:
-            boleto = {"pdf": resultado}
         return {
-            "content": {
-                "boleto": boleto
-            },
+            "content": conteudo,
             "status": 200,
             "reenviar": False
         }
@@ -141,5 +132,5 @@ class EnviarPedido(Enviar):
             boleto_pdf.drawBoleto(boleto)
             boleto_pdf.save()
             f_pdf.seek(0)
-            return f_pdf
+            return unicode(f_pdf.read(), "ISO-8859-1")
         return None
