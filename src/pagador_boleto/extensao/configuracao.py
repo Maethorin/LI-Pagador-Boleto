@@ -3,15 +3,14 @@ import json
 import os
 from datetime import date, timedelta
 
-from pagador.configuracao.cadastro import CampoFormulario, FormularioBase, TipoDeCampo, CadastroBase, SelecaoBase, FormatoDeCampo, ValidadorBase
+from pagador.configuracao.cadastro import CampoFormulario, FormularioBase, TipoDeCampo, CadastroBase, SelecaoBase, FormatoDeCampo, ValidadorBase, caminho_para_template
 from pagador.configuracao.cliente import Script, TipoScript
 from pagador.configuracao.models import Banco, BoletoCarteira
 from pagador_boleto.extensao.requisicao import EnviarPedido, TipoBoleto
 
 
 def caminho_do_arquivo_de_template(arquivo):
-    diretorio = os.path.dirname(os.path.realpath(__file__))
-    return os.path.join(diretorio, "templates", arquivo)
+    return caminho_para_template(arquivo, meio_pagamento='boleto')
 
 
 class MeioPagamentoCadastro(CadastroBase):
