@@ -1,2 +1,2 @@
 include *.md
-recursive-include src/pagador_deposito/extensao/templates *
+recursive-include src/pagador_boleto/extensao/templates *
