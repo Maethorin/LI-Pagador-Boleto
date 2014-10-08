@@ -31,5 +31,6 @@ setup(
     package_dir={'': 'src'},
     include_package_data=True,
     package_data={'pagador_boleto': ['extensao/templates/*']},
-    install_requires=['distribute', 'li-pagador'],
+    install_requires=['distribute', 'li-pagador', 'pyboleto==0.2.12'],
+    dependency_links=['git+git://github.com/lojaintegrada/pyboleto@0.2.12#egg=pyboleto-0.2.12'],
 )
