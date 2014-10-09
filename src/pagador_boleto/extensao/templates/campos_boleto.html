@@ -43,7 +43,14 @@ $(document).ready(function() {
     var preencheCampos = function() {
         var $json = $("#id_json");
         if ($json.val()) {
-            jsonResultado = JSON.parse($json.val());
+            var jsonRetorno = JSON.parse($json.val());
+            if (jsonRetorno) {
+                for (var campo in jsonResultado) {
+                    if (jsonRetorno.hasOwnProperty(campo)) {
+                        jsonResultado[campo] = jsonRetorno[campo];
+                    }
+                }
+            }
             for (var campo in jsonResultado) {
                 if (campo != "linha_1" && campo != "desconto_valor" && campo != "aplicar_no_total") {
                     var $campo = $("#id_" + campo);
