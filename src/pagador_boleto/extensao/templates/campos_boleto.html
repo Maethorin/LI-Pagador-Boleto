@@ -44,28 +44,26 @@ $(document).ready(function() {
         var $json = $("#id_json");
         if ($json.val()) {
             var jsonRetorno = JSON.parse($json.val());
-            if (jsonRetorno) {
-                for (var campo in jsonResultado) {
-                    if (jsonRetorno.hasOwnProperty(campo)) {
-                        jsonResultado[campo] = jsonRetorno[campo];
-                    }
+            for (var campo in jsonResultado) {
+                if (jsonRetorno.hasOwnProperty(campo)) {
+                    jsonResultado[campo] = jsonRetorno[campo];
                 }
             }
-            for (var campo in jsonResultado) {
-                if (campo != "linha_1" && campo != "desconto_valor" && campo != "aplicar_no_total") {
-                    var $campo = $("#id_" + campo);
-                    $campo.prop("disabled", false);
-                    $campo.val(jsonResultado[campo]);
-                    if (campo == "banco") {
-                        $campo.change();
-                    }
-                    if (errosValidacao.hasOwnProperty(campo)) {
-                        var $formGroup = $campo.parents(".form-group");
-                        $formGroup.addClass("has-error");
-                        $formGroup.find(".errorlist li").remove();
-                        $formGroup.find(".errorlist").append("<li>" + errosValidacao[campo] + "</li>");
-                        $formGroup.find(".errorlist").show();
-                    }
+        }
+        for (var campo in jsonResultado) {
+            if (campo != "linha_1" && campo != "desconto_valor" && campo != "aplicar_no_total") {
+                var $campo = $("#id_" + campo);
+                $campo.prop("disabled", false);
+                $campo.val(jsonResultado[campo]);
+                if (campo == "banco") {
+                    $campo.change();
+                }
+                if (errosValidacao.hasOwnProperty(campo)) {
+                    var $formGroup = $campo.parents(".form-group");
+                    $formGroup.addClass("has-error");
+                    $formGroup.find(".errorlist li").remove();
+                    $formGroup.find(".errorlist").append("<li>" + errosValidacao[campo] + "</li>");
+                    $formGroup.find(".errorlist").show();
                 }
             }
         }
