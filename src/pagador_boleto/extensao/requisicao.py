@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
 import datetime
-from pagador.configuracao.models import Banco
-
-from pagador.envio.requisicao import Enviar
-from pagador.retorno.models import SituacaoPedido
-
 from unicodedata import normalize
+import StringIO
 
 from pyboleto.bank.bancodobrasil import BoletoBB
 from pyboleto.bank.bradesco import BoletoBradesco
@@ -13,8 +9,10 @@ from pyboleto.bank.caixa import BoletoCaixa
 from pyboleto.bank.itau import BoletoItau
 from pyboleto.html import BoletoHTML
 from pyboleto.pdf import BoletoPDF
-import StringIO
 from repositories.configuracao.models import BoletoCarteira
+
+from pagador.configuracao.models import Banco
+from pagador.envio.requisicao import Enviar
 
 
 class TipoBoleto(object):
@@ -31,7 +29,7 @@ class EnviarPedido(Enviar):
         self.grava_identificador = False
 
     def obter_situacao_do_pedido(self, status_requisicao):
-        return SituacaoPedido.SITUACAO_AGUARDANDO_PAGTO
+        return None
 
     @property
     def endereco_completo(self):
