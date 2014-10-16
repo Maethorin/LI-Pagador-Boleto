@@ -5,7 +5,7 @@ from datetime import date, timedelta
 
 from pagador.configuracao.cadastro import CampoFormulario, FormularioBase, TipoDeCampo, CadastroBase, SelecaoBase, FormatoDeCampo, ValidadorBase, caminho_para_template
 from pagador.configuracao.cliente import Script, TipoScript
-from pagador.configuracao.models import Banco, BoletoCarteira
+from pagador.configuracao.models import Banco, BoletoCarteira, PagamentoNaoConfigurado
 from pagador_boleto.extensao.requisicao import EnviarPedido, TipoBoleto
 
 
@@ -71,6 +71,8 @@ class MeioPagamentoCadastro(CadastroBase):
             return {"content": {"erro": u"Por favor atualize as suas informações, salve e tente novamente."}, "status": 400}
         except ValueError:
             return {"content": {"erro": u"Não foi possível gerar o boleto. Por favor atualize as suas informações, salve e tente novamente."}, "status": 400}
+        except PagamentoNaoConfigurado, ex:
+            return {"content": {"erro": u"Salve as informações do boleto para gerar um boleto de teste."}, "status": 400}
 
 
 class ValidarJson(ValidadorBase):

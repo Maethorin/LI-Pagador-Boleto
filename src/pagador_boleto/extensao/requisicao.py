@@ -11,7 +11,7 @@ from pyboleto.html import BoletoHTML
 from pyboleto.pdf import BoletoPDF
 from repositories.configuracao.models import BoletoCarteira
 
-from pagador.configuracao.models import Banco
+from pagador.configuracao.models import Banco, PagamentoNaoConfigurado
 from pagador.envio.requisicao import Enviar
 
 
@@ -57,19 +57,14 @@ class EnviarPedido(Enviar):
         }
 
     def para_ascii(self, texto):
-        """Remove qualquer acentuação e qualquer caractere estranho."""
         try:
             return normalize('NFKD', texto.decode('utf-8')).encode('ASCII', 'ignore')
         except UnicodeEncodeError:
             return normalize('NFKD', texto).encode('ASCII', 'ignore')
 
     def emitir_boleto(self, data_processamento, data_documento, data_vencimento, valor_documento, sacado, numero_documento, nosso_numero=None, tipo=TipoBoleto.html):
-        """Emite um boleto com os dados passados.
-        Caso pdf seja True, retorna uma tupla com a linha digitável e a
-        instância do arquivo PDF.
-        """
         if not self.configuracao_pagamento.json:
-            return None
+            raise PagamentoNaoConfigurado("Os dados do boleto não foram salvos no painel da loja.")
         dados = self.configuracao_pagamento.json
         banco = Banco.objects.get(pk=dados['banco'])
         convenio = int(dados.get('banco_convenio') or 0)
