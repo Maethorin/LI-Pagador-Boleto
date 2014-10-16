@@ -8,8 +8,8 @@ errosValidacao = errosValidacao.erros.json;
 {% else %}
 var errosValidacao = {};
 {% endif %}
-var jsonResultado = {desconto_valor: null, empresa_estado: null, banco_agencia: null, empresa_beneficiario: null, carteira: null, aplicar_no_total: null, linha_2: null, empresa_endereco: null, empresa_cidade: null, linha_1: null, linha_3: null, banco_convenio: null, empresa_cnpj: null, banco: null, banco_conta: null};
-var requeridos = ["empresa_cnpj", "empresa_beneficiario", "empresa_endereco", "empresa_estado", "empresa_cidade", "banco", "carteira", "banco_agencia", "banco_conta"];
+var jsonResultado = {desconto_valor: null, empresa_estado: null, banco_agencia: null, empresa_beneficiario: null, carteira: null, aplicar_no_total: null, linha_2: null, empresa_endereco: null, empresa_cidade: null, linha_1: null, linha_3: null, banco_convenio: null, cnpj_cpf: null, banco: null, banco_conta: null};
+var requeridos = ["cnpj_cpf", "empresa_beneficiario", "empresa_endereco", "empresa_estado", "empresa_cidade", "banco", "carteira", "banco_agencia", "banco_conta"];
 $(document).ready(function() {
 
     var bancos_tamanho_conta = {"2": 5, "1": 7, "6": 8, "4": 6};
@@ -50,24 +50,44 @@ $(document).ready(function() {
                 }
             }
         }
-        for (var campo in jsonResultado) {
-            if (campo != "linha_1" && campo != "desconto_valor" && campo != "aplicar_no_total") {
-                var $campo = $("#id_" + campo);
+        for (var propriedade in jsonResultado) {
+            if (propriedade != "linha_1" && propriedade != "desconto_valor" && propriedade != "aplicar_no_total") {
+                var id_campo = propriedade;
+                var id_esconder = null;
+                if (propriedade == "cnpj_cpf") {
+                    id_campo = (jsonResultado[propriedade].length == 14 ? "cnpj" : "cpf");
+                    id_esconder = (jsonResultado[propriedade].length == 14 ? "cpf" : "cnpj");
+                    var $esconder = $("#id_" + id_esconder);
+                    $esconder.prop("disabled", false);
+                    $esconder.parents(".form-group").hide();
+                    $("#btn_" + id_campo).button('toggle');
+                }
+                var $campo = $("#id_" + id_campo);
                 $campo.prop("disabled", false);
-                $campo.val(jsonResultado[campo]);
-                if (campo == "banco") {
+                $campo.val(jsonResultado[propriedade]);
+                if (propriedade == "banco") {
                     $campo.change();
                 }
-                if (errosValidacao.hasOwnProperty(campo)) {
+                if (errosValidacao.hasOwnProperty(propriedade)) {
                     var $formGroup = $campo.parents(".form-group");
                     $formGroup.addClass("has-error");
                     $formGroup.find(".errorlist li").remove();
-                    $formGroup.find(".errorlist").append("<li>" + errosValidacao[campo] + "</li>");
+                    $formGroup.find(".errorlist").append("<li>" + errosValidacao[propriedade] + "</li>");
                     $formGroup.find(".errorlist").show();
                 }
             }
         }
     };
+
+    $(".documento").click(function() {
+        var $this = $(this);
+        var documento = $this.data("documento");
+        var id_esconder = (documento == "cnpj" ? "cpf" : "cnpj");
+        var $exibir = $("#id_" + documento);
+        var $esconder = $("#id_" + id_esconder);
+        $exibir.parents(".form-group").show();
+        $esconder.parents(".form-group").hide();
+    });
 
     $('#id_banco').change(function() {
         var self = $(this);
@@ -83,8 +103,9 @@ $(document).ready(function() {
         help_block.text(help_block.text().replace(/\d+/, tamanho));
     });
 
-    $('#id_empresa_cnpj').mask('99.999.999/9999-99');
     preencheCampos();
+    $('#id_cnpj').mask('99.999.999/9999-99');
+    $('#id_cpf').mask('999.999.999-99');
 
     var escondeAlertas = function() {
         $(".alert").not("#alertaAviso").not("#alertaBotaoTeste").not("#alertaInfo").hide();
@@ -95,7 +116,11 @@ $(document).ready(function() {
         if ($("#id_ativo").val() == 'True') {
             var tem_erro = false;
             for (var indice in requeridos) {
-                var $campoRequerido = $("#id_" + requeridos[indice]);
+                var id_campo = requeridos[indice];
+                if (id_campo == "cnpj_cpf") {
+                    id_campo = ($("#btn_cnpj").hasClass("active") ? "cnpj" : "cpf");
+                }
+                var $campoRequerido = $("#id_" + id_campo);
                 var $formGroup = $campoRequerido.parents(".form-group");
                 $formGroup.removeClass("has-error");
                 $formGroup.find(".errorlist").hide();
@@ -115,17 +140,26 @@ $(document).ready(function() {
                 return false
             }
         }
-        for (var campo in jsonResultado) {
-            var $campo = $("#id_" + campo);
+        for (var propriedade in jsonResultado) {
+            var id_campo = propriedade;
+            if (id_campo == "cnpj_cpf") {
+                id_campo = ($("#btn_cnpj").hasClass("active") ? "cnpj" : "cpf");
+            }
+            var $campo = $("#id_" + id_campo);
             var valor = $campo.val();
-            if (campo == "desconto_valor") {
+            if (propriedade == "cnpj_cpf") {
+                valor = valor.replace(/\./g, "");
+                valor = valor.replace(/\//g, "");
+                valor = valor.replace(/\-/g, "");
+            }
+            if (propriedade == "desconto_valor") {
                 valor = valor.replace(/\./g, "");
                 valor = valor.replace(/\,/g, ".");
             }
-            if (campo == "aplicar_no_total") {
+            if (propriedade == "aplicar_no_total") {
                 valor = $campo.is(":checked");
             }
-            jsonResultado[campo] = valor;
+            jsonResultado[propriedade] = valor;
         }
         $("#id_json").val(JSON.stringify(jsonResultado));
     });
@@ -134,7 +168,6 @@ $(document).ready(function() {
         escondeAlertas();
         var url = "https://{{ request.get_host }}{% url 'config_pagamento_configuracao_complemento' pagamento_id=pagamento.id tipo='BoletoTeste' metodo='GET' %}";
         $.getJSON(url).done(function(data) {
-            console.log(data);
             var html_modal = "";
             if (data.sucesso) {
                 html_modal = data.content
@@ -169,16 +202,36 @@ $(document).ready(function() {
     </p>
 </div>
 
-<h4>Dados da empresa</h4>
-<div class="form-group ">
-    <label for="id_empresa_cnpj" class="control-label col-sm-3">CNPJ:</label>
+<h4>Dados do Beneficiário</h4>
+<div class="form-group">
+    <label class="control-label col-sm-3">Tipo de documento:</label>
     <div class="col-sm-6">
-        <input class="form-control" id="id_empresa_cnpj" maxlength="18" name="empresa_cnpj" value="" type="text" disabled="disabled" />
+        <div class="btn-group" data-toggle="buttons">
+            <label class="btn btn-primary documento" id="btn_cpf" data-documento="cpf">
+                <input type="radio" autocomplete="off" name="documento" id="cpf" />CPF
+            </label>
+            <label class="btn btn-primary documento" id="btn_cnpj" data-documento="cnpj">
+                <input type="radio" autocomplete="off" name="documento" id="cnpj" />CNPJ
+            </label>
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <label for="id_cpf" class="control-label col-sm-3">CPF:</label>
+    <div class="col-sm-6">
+        <input class="form-control" id="id_cpf" maxlength="18" name="cpf" value="" type="text" disabled="disabled" />
+        <ul class="errorlist" style="display: none"><li>Este campo é obrigatório.</li></ul>
+    </div>
+</div>
+<div class="form-group">
+    <label for="id_cnpj" class="control-label col-sm-3">CNPJ:</label>
+    <div class="col-sm-6">
+        <input class="form-control" id="id_cnpj" maxlength="18" name="cnpj" value="" type="text" disabled="disabled" />
         <ul class="errorlist" style="display: none"><li>Este campo é obrigatório.</li></ul>
     </div>
 </div>
 <div class="form-group ">
-    <label for="id_empresa_beneficiario" class="control-label col-sm-3">Beneficiário:</label>
+    <label for="id_empresa_beneficiario" class="control-label col-sm-3">Nome:</label>
     <div class="col-sm-6">
         <input class="form-control" id="id_empresa_beneficiario" maxlength="128" name="empresa_beneficiario" value="" type="text" disabled="disabled" />
         <ul class="errorlist" style="display: none"><li>Este campo é obrigatório.</li></ul>

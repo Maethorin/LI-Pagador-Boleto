@@ -87,13 +87,13 @@ class ValidarJson(ValidadorBase):
         def so_numeros(s):
             return u''.join([x for x in s if x.isdigit()])
 
-        for i in ['empresa_cnpj', 'banco_agencia', 'banco_conta', 'banco_convenio']:
+        for i in ['cnpj_cpf', 'banco_agencia', 'banco_conta', 'banco_convenio']:
             if data.get(i):
                 valor = so_numeros(data[i])
-                if i != 'empresa_cnpj' and not valor:
+                if i != 'cnpj_cpf' and not valor:
                     self.erros[i] = u"Informação inválida. Deve conter apenas digitos."
-                if i == 'empresa_cnpj' and len(valor) < 14:
-                    self.erros['empresa_cnpj'] = u"CNPJ da empresa inválido."
+                if i == 'cnpj_cpf' and (len(valor) != 14 and len(valor) != 11):
+                    self.erros['cnpj_cpf'] = u"CPF/CNPJ inválido. Deve ter 14 digitos para CNPJ ou 11 para CPF"
 
         if data.get('desconto_valor', None):
             try:
