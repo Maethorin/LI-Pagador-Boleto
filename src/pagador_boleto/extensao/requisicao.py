@@ -34,7 +34,7 @@ class EnviarPedido(Enviar):
     @property
     def endereco_completo(self):
         complemento = self.pedido.endereco_pagamento.complemento and (" - %s" % self.pedido.endereco_pagamento.complemento) or ""
-        return "{}, {}{} - {}, {} / {} - CEP: {}".format(
+        return u"{}, {}{} - {}, {} / {} - CEP: {}".format(
             self.pedido.endereco_pagamento.endereco, self.pedido.endereco_pagamento.numero, complemento, self.pedido.endereco_pagamento.bairro,
             self.pedido.endereco_pagamento.cidade, self.pedido.endereco_pagamento.estado, self.pedido.endereco_pagamento.cep)
 
