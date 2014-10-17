@@ -8,8 +8,8 @@ errosValidacao = errosValidacao.erros.json;
 {% else %}
 var errosValidacao = {};
 {% endif %}
-var jsonResultado = {desconto_valor: null, empresa_estado: null, banco_agencia: null, empresa_beneficiario: null, carteira: null, aplicar_no_total: null, linha_2: null, empresa_endereco: null, empresa_cidade: null, linha_1: null, linha_3: null, banco_convenio: null, cnpj_cpf: null, banco: null, banco_conta: null};
-var requeridos = ["cnpj_cpf", "empresa_beneficiario", "empresa_endereco", "empresa_estado", "empresa_cidade", "banco", "carteira", "banco_agencia", "banco_conta"];
+var jsonResultado = {desconto_valor: null, empresa_estado: null, banco_agencia: null, empresa_beneficiario: null, carteira: null, aplicar_no_total: null, linha_2: null, empresa_endereco: null, empresa_cidade: null, linha_1: null, linha_3: null, banco_convenio: null, empresa_cnpj: null, banco: null, banco_conta: null};
+var requeridos = ["empresa_cnpj", "empresa_beneficiario", "empresa_endereco", "empresa_estado", "empresa_cidade", "banco", "carteira", "banco_agencia", "banco_conta"];
 $(document).ready(function() {
 
     var bancos_tamanho_conta = {"2": 5, "1": 7, "6": 8, "4": 6};
@@ -54,7 +54,7 @@ $(document).ready(function() {
             if (propriedade != "linha_1" && propriedade != "desconto_valor" && propriedade != "aplicar_no_total") {
                 var id_campo = propriedade;
                 var id_esconder = null;
-                if (propriedade == "cnpj_cpf") {
+                if (propriedade == "empresa_cnpj") {
                     id_campo = (jsonResultado[propriedade].length == 14 ? "cnpj" : "cpf");
                     id_esconder = (jsonResultado[propriedade].length == 14 ? "cpf" : "cnpj");
                     var $esconder = $("#id_" + id_esconder);
@@ -117,7 +117,7 @@ $(document).ready(function() {
             var tem_erro = false;
             for (var indice in requeridos) {
                 var id_campo = requeridos[indice];
-                if (id_campo == "cnpj_cpf") {
+                if (id_campo == "empresa_cnpj") {
                     id_campo = ($("#btn_cnpj").hasClass("active") ? "cnpj" : "cpf");
                 }
                 var $campoRequerido = $("#id_" + id_campo);
@@ -142,12 +142,12 @@ $(document).ready(function() {
         }
         for (var propriedade in jsonResultado) {
             var id_campo = propriedade;
-            if (id_campo == "cnpj_cpf") {
+            if (id_campo == "empresa_cnpj") {
                 id_campo = ($("#btn_cnpj").hasClass("active") ? "cnpj" : "cpf");
             }
             var $campo = $("#id_" + id_campo);
             var valor = $campo.val();
-            if (propriedade == "cnpj_cpf") {
+            if (propriedade == "empresa_cnpj") {
                 valor = valor.replace(/\./g, "");
                 valor = valor.replace(/\//g, "");
                 valor = valor.replace(/\-/g, "");
