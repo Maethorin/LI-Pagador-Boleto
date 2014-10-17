@@ -40,7 +40,7 @@ class EnviarPedido(Enviar):
 
     def processar_resposta(self, resposta):
         if self.pedido.pagamento.codigo != 'boleto':
-            return {"content": "Não foi encontrada forma de pagamento usando boleto bancário para o pedido {} na conta {}".format(self.pedido.numero, self.pedido.conta_id), "status": 404, "reenviar": False}
+            return {"content": u"Não foi encontrada forma de pagamento usando boleto bancário para o pedido {} na conta {}".format(self.pedido.numero, self.pedido.conta_id), "status": 404, "reenviar": False}
         sacado = [self.pedido.endereco_entrega.nome, self.endereco_completo]
         conteudo = self.emitir_boleto(
             self.pedido.data_criacao.date(),
@@ -64,7 +64,7 @@ class EnviarPedido(Enviar):
 
     def emitir_boleto(self, data_processamento, data_documento, data_vencimento, valor_documento, sacado, numero_documento, nosso_numero=None, tipo=TipoBoleto.html):
         if not self.configuracao_pagamento.json:
-            raise PagamentoNaoConfigurado("Os dados do boleto não foram salvos no painel da loja.")
+            raise PagamentoNaoConfigurado(u"Os dados do boleto não foram salvos no painel da loja.")
         dados = self.configuracao_pagamento.json
         banco = Banco.objects.get(pk=dados['banco'])
         convenio = int(dados.get('banco_convenio') or 0)
@@ -84,7 +84,7 @@ class EnviarPedido(Enviar):
             boleto = BoletoCaixa()
         carteira = BoletoCarteira.objects.get(pk=dados['carteira'], ativo=True)
         if not boleto:
-            return {"erro": "Boleto para {} ainda não implementado.".format(banco.nome)}
+            return {"erro": u"Boleto para {} ainda não implementado.".format(banco.nome)}
 
         boleto.carteira = carteira.numero.encode('utf-8')
         boleto.cedente = dados['empresa_beneficiario'].encode('utf-8')
