@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import datetime
-from unicodedata import normalize
 import StringIO
 
 from pyboleto.bank.bancodobrasil import BoletoBB
@@ -56,12 +55,6 @@ class EnviarPedido(Enviar):
             "reenviar": False
         }
 
-    def para_ascii(self, texto):
-        try:
-            return normalize('NFKD', texto.decode('utf-8')).encode('ASCII', 'ignore')
-        except UnicodeEncodeError:
-            return normalize('NFKD', texto).encode('ASCII', 'ignore')
-
     def emitir_boleto(self, data_processamento, data_documento, data_vencimento, valor_documento, sacado, numero_documento, nosso_numero=None, tipo=TipoBoleto.html):
         if not self.configuracao_pagamento.json:
             raise PagamentoNaoConfigurado(u"Os dados do boleto não foram salvos no painel da loja.")
@@ -103,7 +96,7 @@ class EnviarPedido(Enviar):
         if not isinstance(sacado, list):
             sacado = [sacado]
         boleto.sacado = sacado
-        boleto.sacado = [self.para_ascii(texto) or texto for texto in boleto.sacado]
+        boleto.sacado = [self.formatador.string_para_ascii(texto) or texto for texto in boleto.sacado]
         boleto.numero_documento = str(numero_documento)
         if nosso_numero:
             boleto.nosso_numero = str(nosso_numero)
