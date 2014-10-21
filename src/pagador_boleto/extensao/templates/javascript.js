@@ -18,10 +18,16 @@ $(function() {
                 exibeMensagemErro(data.status, data.content);
             })
             .done(function (data) {
-                console.log(data);
                 if (data.sucesso) {
                     $("#aguarde").hide();
                     exibeMensagemSucesso(data.content)
+                }
+                else if (data.status == 404) {
+                    var fatal = false;
+                    if (data.content.hasOwnProperty("fatal")) {
+                        fatal = data.content.fatal;
+                    }
+                    exibeMensagemErro(data.status, data.content.mensagem, fatal);
                 }
                 else {
                     if ('{{ settings.DEBUG }}' == 'True') {
@@ -34,12 +40,16 @@ $(function() {
             });
     }
 
-    function exibeMensagemErro(status, mensagem) {
+    function exibeMensagemErro(status, mensagem, fatal) {
         $boletoMensagem.find(".msg-warning").hide();
         $boletoMensagem.toggleClass("alert-message-warning alert-message-danger");
         var $errorMessage = $("#errorMessage");
         $errorMessage.text(status + ": " + mensagem);
         $boletoMensagem.find(".msg-danger").show();
+        if (fatal) {
+            $(".pagar").remove();
+            $(".click").remove();
+        }
     }
 
     function exibeMensagemSucesso(linha_digitavel) {

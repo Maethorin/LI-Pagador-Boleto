@@ -1,5 +1,5 @@
 {% load filters %}
-{% if modo == "padrao_novo" %}
+{% if modo == "padrao-novo" %}
     <li class="pagamento lista-item" id="pagamento_8" data-id="8" data-nome="Boleto Bancário">
         <div class="radio_button">
             <input data-desconto_tipo="{{ pagamento.desconto_tipo }}" data-desconto="{{ pagamento.desconto_valor|floatformat:'%.2f' }}" class="forma_pagamento" type="radio" value="8" name="forma_pagamento" {% if forma_pagamento == pagamento.id|stringformat:"s" %}checked="checked"{% endif %} />
