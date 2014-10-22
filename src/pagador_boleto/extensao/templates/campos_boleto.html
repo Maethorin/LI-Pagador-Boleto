@@ -55,8 +55,14 @@ $(document).ready(function() {
                 var id_campo = propriedade;
                 var id_esconder = null;
                 if (propriedade == "empresa_cnpj") {
-                    id_campo = (jsonResultado[propriedade].length == 14 ? "cnpj" : "cpf");
-                    id_esconder = (jsonResultado[propriedade].length == 14 ? "cpf" : "cnpj");
+                    if (!jsonResultado[propriedade]) {
+                        id_campo = "cpf";
+                        id_esconder = "cnpj";
+                    }
+                    else {
+                        id_campo = (jsonResultado[propriedade].length == 14 ? "cnpj" : "cpf");
+                        id_esconder = (jsonResultado[propriedade].length == 14 ? "cpf" : "cnpj");
+                    }
                     var $esconder = $("#id_" + id_esconder);
                     $esconder.prop("disabled", false);
                     $esconder.parents(".form-group").hide();

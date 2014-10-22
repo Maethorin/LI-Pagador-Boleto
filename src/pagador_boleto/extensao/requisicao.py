@@ -46,7 +46,8 @@ class EnviarPedido(Enviar):
             self.pedido.data_criacao.date(),
             self.pedido.data_criacao.date() + datetime.timedelta(days=5),
             self.pedido.valor_total,
-            sacado, self.pedido.numero,
+            sacado,
+            self.pedido.numero,
             tipo=self.dados["formato"]
         )
         return {
