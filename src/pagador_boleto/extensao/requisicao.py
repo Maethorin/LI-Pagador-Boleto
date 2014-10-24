@@ -19,6 +19,10 @@ class TipoBoleto(object):
     pdf = "pdf"
     linha_digitavel = "linha_digitavel"
 
+    @classmethod
+    def eh_valido(cls, formato):
+        return formato in [prop for prop in dir(cls) if not prop.startswith("__")]
+
 
 class EnviarPedido(Enviar):
     def __init__(self, pedido, dados, configuracao_pagamento):
@@ -41,6 +45,12 @@ class EnviarPedido(Enviar):
         if self.pedido.pagamento.codigo != 'boleto':
             return {"content": u"Não foi encontrada forma de pagamento usando boleto bancário para o pedido {} na conta {}".format(self.pedido.numero, self.pedido.conta_id), "status": 404, "reenviar": False}
         sacado = [self.pedido.endereco_entrega.nome, self.endereco_completo]
+        formato = TipoBoleto.linha_digitavel
+        if "formato" in self.dados:
+            formato = self.dados["formato"]
+        if not TipoBoleto.eh_valido(formato):
+            formato = TipoBoleto.linha_digitavel
+
         conteudo = self.emitir_boleto(
             self.pedido.data_criacao.date(),
             self.pedido.data_criacao.date(),
@@ -48,7 +58,7 @@ class EnviarPedido(Enviar):
             self.pedido.valor_total,
             sacado,
             self.pedido.numero,
-            tipo=self.dados["formato"]
+            tipo=formato
         )
         return {
             "content": conteudo,
