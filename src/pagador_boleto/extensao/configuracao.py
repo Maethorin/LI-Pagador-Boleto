@@ -87,6 +87,8 @@ class ValidarJson(ValidadorBase):
         def so_numeros(s):
             return u''.join([x for x in s if x.isdigit()])
 
+        banco = data.get('banco')
+        bancos_limites = {"2": 5, "1": 7, "6": 8, "4": 6, "7": 7}
         for i in ['empresa_cnpj', 'banco_agencia', 'banco_conta', 'banco_convenio']:
             if data.get(i):
                 valor = so_numeros(data[i])
@@ -94,8 +96,12 @@ class ValidarJson(ValidadorBase):
                     self.erros[i] = u"Informação inválida. Deve conter apenas digitos."
                 if i == 'empresa_cnpj' and (len(valor) != 14 and len(valor) != 11):
                     self.erros['empresa_cnpj'] = u"CPF/CNPJ inválido. Deve ter 14 digitos para CNPJ ou 11 para CPF"
-                if i == 'banco_convenio' and not len(data[i]) in [6, 7, 8]:
-                    self.erros[i] = u"Convênio deve ter 6, 7 ou 8 dígitos"
+                if i == 'banco_convenio':
+                    tamanho_atual = len(data[i])
+                    if banco == "4" and not tamanho_atual in [6, 7, 8]:
+                        self.erros[i] = u"Certifique-se de que o valor tenha 6, 7 ou 8 caracteres (ele possui {}).".format(tamanho_atual)
+                    if banco == "7" and not tamanho_atual == 7:
+                        self.erros[i] = u"Certifique-se de que o valor tenha 7 caracteres (ele possui {}).".format(tamanho_atual)
 
         if data.get('desconto_valor', None):
             try:
@@ -104,13 +110,12 @@ class ValidarJson(ValidadorBase):
                     self.erros['desconto_valor'] = u"Porcentagem inválida. Insira um valor entre 0% e 100%."
             except ValueError:
                 self.erros['desconto_valor'] = u"Porcentagem inválida. Insira um valor entre 0% e 100%."
-        bancos_limites = {"2": 5, "1": 7, "6": 8, "4": 6}
-        if data.get('banco_conta') and data.get('banco') and bancos_limites.get(data['banco']):
+        if data.get('banco_conta') and banco and bancos_limites.get(banco):
             conta = data['banco_conta']
             tamanho_atual = len(conta)
             tamanho_necessario = bancos_limites[data['banco']]
             if tamanho_atual != tamanho_necessario:
-                self.erros["banco_conta"] = "Certifique-se de que o valor tenha %s caracteres (ele possui %s)." % (tamanho_necessario, tamanho_atual)
+                self.erros["banco_conta"] = u"Certifique-se de que o valor tenha {} caracteres (ele possui {}).".format(tamanho_necessario, tamanho_atual)
 
         endereco = u'%s - %s / %s' % (data.get('empresa_endereco'), data.get('empresa_cidade'), data.get('empresa_estado'))
         if len(endereco) > 80:

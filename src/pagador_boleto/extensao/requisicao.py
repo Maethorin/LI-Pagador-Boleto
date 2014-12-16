@@ -6,6 +6,7 @@ from pyboleto.bank.bancodobrasil import BoletoBB
 from pyboleto.bank.bradesco import BoletoBradesco
 from pyboleto.bank.caixa import BoletoCaixa
 from pyboleto.bank.itau import BoletoItau
+from pyboleto.bank.santander import BoletoSantander
 from pyboleto.html import BoletoHTML
 from pyboleto.pdf import BoletoPDF
 from repositories.configuracao.models import BoletoCarteira
@@ -81,6 +82,8 @@ class EnviarPedido(Enviar):
             boleto = BoletoBB(len(convenio), 2)
         elif banco.nome == u'Caixa Econômica':
             boleto = BoletoCaixa()
+        elif banco.nome == u'Santander':
+            boleto = BoletoSantander()
         carteira = BoletoCarteira.objects.get(pk=dados['carteira'], ativo=True)
         if not boleto:
             return {"erro": u"Boleto para {} ainda não implementado.".format(banco.nome)}
@@ -92,7 +95,11 @@ class EnviarPedido(Enviar):
         boleto.agencia_cedente = dados['banco_agencia'].encode('utf-8')
         boleto.conta_cedente = dados['banco_conta'].encode('utf-8')
         if convenio:
-            boleto.convenio = convenio
+            if banco.nome == u'Santander':
+                boleto.conta_cedente = convenio.encode('utf-8')
+            else:
+                boleto.convenio = convenio
+
         boleto.data_vencimento = data_vencimento
         boleto.data_documento = data_documento
         boleto.data_processamento = data_processamento

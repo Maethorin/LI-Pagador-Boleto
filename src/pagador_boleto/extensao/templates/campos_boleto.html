@@ -10,36 +10,8 @@ var errosValidacao = {};
 {% endif %}
 var jsonResultado = {desconto_valor: null, empresa_estado: null, banco_agencia: null, empresa_beneficiario: null, carteira: null, aplicar_no_total: null, linha_2: null, empresa_endereco: null, empresa_cidade: null, linha_1: null, linha_3: null, banco_convenio: null, empresa_cnpj: null, banco: null, banco_conta: null};
 var requeridos = ["empresa_cnpj", "empresa_beneficiario", "empresa_endereco", "empresa_estado", "empresa_cidade", "banco", "carteira", "banco_agencia", "banco_conta"];
+var bancoSelecionado = null;
 $(document).ready(function() {
-
-    var bancos_tamanho_conta = {"2": 5, "1": 7, "6": 8, "4": 6};
-    var alterar_carteiras = function(banco_id) {
-        var carteira_select = $('#id_carteira');
-        var carteiras = undefined;
-        for (var i in bancoCarteiraJson) {
-            if (i == banco_id) {
-                carteiras = bancoCarteiraJson[banco_id];
-            }
-        }
-        carteira_select.empty();
-        for (var j in carteiras) {
-            $('<option>').attr({'value': j}).text(carteiras[j].nome).data('convenio', carteiras[j].convenio).appendTo(carteira_select);
-        }
-    };
-
-    var bind_carteira_change = function() {
-        $('#id_carteira').unbind().change(function() {
-            var self = $(this);
-            var convenio_parent = $('#id_banco_convenio').parents('.form-group');
-
-            if (self.find(':selected').data('convenio') == true) {
-                convenio_parent.show();
-            } else {
-                convenio_parent.hide();
-            }
-        }).change();
-    };
-
     var preencheCampos = function() {
         var $json = $("#id_json");
         if ($json.val()) {
@@ -52,23 +24,23 @@ $(document).ready(function() {
         }
         for (var propriedade in jsonResultado) {
             if (propriedade != "linha_1" && propriedade != "desconto_valor" && propriedade != "aplicar_no_total") {
-                var id_campo = propriedade;
-                var id_esconder = null;
+                var campoId = propriedade;
+                var esconderId = null;
                 if (propriedade == "empresa_cnpj") {
                     if (!jsonResultado[propriedade]) {
-                        id_campo = "cpf";
-                        id_esconder = "cnpj";
+                        campoId = "cpf";
+                        esconderId = "cnpj";
                     }
                     else {
-                        id_campo = (jsonResultado[propriedade].length == 14 ? "cnpj" : "cpf");
-                        id_esconder = (jsonResultado[propriedade].length == 14 ? "cpf" : "cnpj");
+                        campoId = (jsonResultado[propriedade].length == 14 ? "cnpj" : "cpf");
+                        esconderId = (jsonResultado[propriedade].length == 14 ? "cpf" : "cnpj");
                     }
-                    var $esconder = $("#id_" + id_esconder);
+                    var $esconder = $("#id_" + esconderId);
                     $esconder.prop("disabled", false);
                     $esconder.parents(".form-group").hide();
-                    $("#btn_" + id_campo).button('toggle');
+                    $("#btn_" + campoId).button('toggle');
                 }
-                var $campo = $("#id_" + id_campo);
+                var $campo = $("#id_" + campoId);
                 $campo.prop("disabled", false);
                 $campo.val(jsonResultado[propriedade]);
                 if (propriedade == "banco") {
@@ -88,26 +60,61 @@ $(document).ready(function() {
     $(".documento").click(function() {
         var $this = $(this);
         var documento = $this.data("documento");
-        var id_esconder = (documento == "cnpj" ? "cpf" : "cnpj");
+        var esconderId = (documento == "cnpj" ? "cpf" : "cnpj");
         var $exibir = $("#id_" + documento);
-        var $esconder = $("#id_" + id_esconder);
+        var $esconder = $("#id_" + esconderId);
         $exibir.parents(".form-group").show();
         $esconder.parents(".form-group").hide();
     });
 
+    var bancosTamanhoConta = {"2": 5, "1": 7, "6": 8, "4": 6, "7": 7};
     $('#id_banco').change(function() {
         var self = $(this);
-        var selected = self.find(':selected');
-        alterar_carteiras(selected.val());
+        alterar_carteiras(self.val());
+        var bancoId = self.val();
+        var tamanho = bancosTamanhoConta[bancoId];
+        bancoSelecionado = bancoId;
         bind_carteira_change();
-        banco_id = selected.val();
-        tamanho = bancos_tamanho_conta[banco_id];
         if (!tamanho) {
             return false;
         }
-        var help_block = $('#id_banco_conta').parents('.form-group').find('.help-block');
-        help_block.text(help_block.text().replace(/\d+/, tamanho));
+        var helpBlock = $('#id_banco_conta').parents('.form-group').find('.help-block');
+        helpBlock.text(helpBlock.text().replace(/\d+/, tamanho));
     });
+
+    var alterar_carteiras = function (banco_id) {
+        var selectCarteira = $('#id_carteira');
+        var carteiras = undefined;
+        for (var i in bancoCarteiraJson) {
+            if (i == banco_id) {
+                carteiras = bancoCarteiraJson[banco_id];
+            }
+        }
+        selectCarteira.empty();
+        for (var j in carteiras) {
+            $('<option>').attr({'value': j}).text(carteiras[j].nome).data('convenio', carteiras[j].convenio).appendTo(selectCarteira);
+        }
+    };
+
+    var bind_carteira_change = function () {
+        $('#id_carteira').unbind().change(function () {
+            var self = $(this);
+            var convenioParent = $('#id_banco_convenio').parents('.form-group');
+            if (self.find(':selected').data('convenio') == true) {
+                convenioParent.show();
+            } else {
+                convenioParent.hide();
+            }
+            var $labelConvenio = $(".label-convenio");
+            $labelConvenio.text("Convênio:");
+            var $helpConvenio = $(".help-convenio");
+            $helpConvenio.text("Preencha o código do convênio.");
+            if (bancoSelecionado == "7") {
+                $labelConvenio.text("Código PSK:");
+                $helpConvenio.text("Preencha o código do PSK com 7 dígitos.")
+            }
+        }).change();
+    };
 
     preencheCampos();
     $('#id_cnpj').mask('99.999.999/9999-99');
@@ -120,25 +127,26 @@ $(document).ready(function() {
     $("#formPagamentoEditar").submit(function(e) {
         escondeAlertas();
         if ($("#id_ativo").val() == 'True') {
-            var tem_erro = false;
+            var temErro = false;
+            var campoId = null;
             for (var indice in requeridos) {
-                var id_campo = requeridos[indice];
-                if (id_campo == "empresa_cnpj") {
-                    id_campo = ($("#btn_cnpj").hasClass("active") ? "cnpj" : "cpf");
+                campoId = requeridos[indice];
+                if (campoId == "empresa_cnpj") {
+                    campoId = ($("#btn_cnpj").hasClass("active") ? "cnpj" : "cpf");
                 }
-                var $campoRequerido = $("#id_" + id_campo);
+                var $campoRequerido = $("#id_" + campoId);
                 var $formGroup = $campoRequerido.parents(".form-group");
                 $formGroup.removeClass("has-error");
                 $formGroup.find(".errorlist").hide();
                 if (!$campoRequerido.val()) {
-                    tem_erro = true;
+                    temErro = true;
                     $formGroup.addClass("has-error");
                     $formGroup.find(".errorlist li").remove();
                     $formGroup.find(".errorlist").append("<li>Este campo é obrigatório</li>");
                     $formGroup.find(".errorlist").show();
                 }
             }
-            if (tem_erro) {
+            if (temErro) {
                 e.preventDefault();
                 $("html, body").animate({scrollTop : 0 });
                 var $alertaErro = $("#alertaErro");
@@ -147,11 +155,11 @@ $(document).ready(function() {
             }
         }
         for (var propriedade in jsonResultado) {
-            var id_campo = propriedade;
-            if (id_campo == "empresa_cnpj") {
-                id_campo = ($("#btn_cnpj").hasClass("active") ? "cnpj" : "cpf");
+            campoId = propriedade;
+            if (campoId == "empresa_cnpj") {
+                campoId = ($("#btn_cnpj").hasClass("active") ? "cnpj" : "cpf");
             }
-            var $campo = $("#id_" + id_campo);
+            var $campo = $("#id_" + campoId);
             var valor = $campo.val();
             if (propriedade == "empresa_cnpj") {
                 valor = valor.replace(/\./g, "");
@@ -174,9 +182,9 @@ $(document).ready(function() {
         escondeAlertas();
         var url = "https://{{ request.get_host }}{% url 'config_pagamento_configuracao_complemento' pagamento_id=pagamento.id tipo='BoletoTeste' metodo='GET' %}";
         $.getJSON(url).done(function(data) {
-            var html_modal = "";
+            var htmlModal = "";
             if (data.sucesso) {
-                html_modal = data.content
+                htmlModal = data.content
             }
             else {
                 var alertaBoletoTeste = [
@@ -185,10 +193,11 @@ $(document).ready(function() {
                         '<h4 class="texto-erro">' + data.content.erro + '</h4>',
                     '</div>'
                 ];
-                html_modal = alertaBoletoTeste.join("");
+                htmlModal = alertaBoletoTeste.join("");
             }
-            $("#modalBoletoTeste").find(".corpo").html(html_modal);
-            $('#modalBoletoTeste').modal('show')
+            var $modalBoletoTeste = $("#modalBoletoTeste");
+            $modalBoletoTeste.find(".corpo").html(htmlModal);
+            $modalBoletoTeste.modal('show')
         });
     })
 });
@@ -336,10 +345,10 @@ $(document).ready(function() {
     </div>
 </div>
 <div class="form-group ">
-    <label for="id_banco_convenio" class="control-label col-sm-3">Convênio:</label>
+    <label for="id_banco_convenio" class="label-convenio control-label col-sm-3">Convênio:</label>
     <div class="col-sm-6">
         <input class="form-control" id="id_banco_convenio" maxlength="8" name="banco_convenio" value="" type="text" disabled="disabled" />
-        <p class="help-block">Preencha a código do convênio.</p>
+        <p class="help-convenio help-block">Preencha a código do convênio.</p>
         <ul class="errorlist" style="display: none"></ul>
     </div>
 </div>
