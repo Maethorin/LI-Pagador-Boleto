@@ -71,19 +71,14 @@ class EnviarPedido(Enviar):
             raise PagamentoNaoConfigurado(u"Os dados do boleto não foram salvos no painel da loja.")
         dados = self.configuracao_pagamento.json
         banco = Banco.objects.get(pk=dados['banco'])
-        convenio = int(dados.get('banco_convenio') or 0)
+        convenio = dados.get('banco_convenio')
         boleto = None
         if banco.nome == u'Bradesco':
             boleto = BoletoBradesco()
         elif banco.nome == u'Banco Itaú':
             boleto = BoletoItau()
         elif banco.nome == u'Banco do Brasil':
-            if 1 <= convenio <= 9999:
-                boleto = BoletoBB(4, 2)
-            elif 1000 <= convenio <= 999999:
-                boleto = BoletoBB(6, 2)
-            else:
-                boleto = BoletoBB(7, 2)
+            boleto = BoletoBB(len(convenio), 2)
         elif banco.nome == u'Caixa Econômica':
             boleto = BoletoCaixa()
         carteira = BoletoCarteira.objects.get(pk=dados['carteira'], ativo=True)

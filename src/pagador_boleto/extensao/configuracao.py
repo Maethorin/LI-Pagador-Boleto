@@ -64,7 +64,7 @@ class MeioPagamentoCadastro(CadastroBase):
         try:
             return {"content": enviar.emitir_boleto(
                 data_processamento=hoje, data_documento=hoje, data_vencimento=vencimento,
-                valor_documento=1.00, sacado='CLIENTE DE TESTE', numero_documento='999999',
+                valor_documento=1.00, sacado='CLIENTE DE TESTE', numero_documento='236',
                 nosso_numero=None, tipo=TipoBoleto.html
             ), "status": 200}
         except BoletoCarteira.DoesNotExist:
@@ -94,6 +94,8 @@ class ValidarJson(ValidadorBase):
                     self.erros[i] = u"Informação inválida. Deve conter apenas digitos."
                 if i == 'empresa_cnpj' and (len(valor) != 14 and len(valor) != 11):
                     self.erros['empresa_cnpj'] = u"CPF/CNPJ inválido. Deve ter 14 digitos para CNPJ ou 11 para CPF"
+                if i == 'banco_convenio' and not len(data[i]) in [6, 7, 8]:
+                    self.erros[i] = u"Convênio deve ter 6, 7 ou 8 dígitos"
 
         if data.get('desconto_valor', None):
             try:
