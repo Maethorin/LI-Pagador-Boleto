@@ -4,7 +4,8 @@ import StringIO
 
 from pyboleto.bank.bancodobrasil import BoletoBB
 from pyboleto.bank.bradesco import BoletoBradesco
-from pyboleto.bank.caixa import BoletoCaixa
+from pyboleto.bank.caixa import BoletoCaixaSIGCB
+from pyboleto.bank.hsbc import BoletoHsbc
 from pyboleto.bank.itau import BoletoItau
 from pyboleto.bank.santander import BoletoSantander
 from pyboleto.html import BoletoHTML
@@ -81,9 +82,11 @@ class EnviarPedido(Enviar):
         elif banco.nome == u'Banco do Brasil':
             boleto = BoletoBB(len(convenio), 2)
         elif banco.nome == u'Caixa Econômica':
-            boleto = BoletoCaixa()
+            boleto = BoletoCaixaSIGCB()
         elif banco.nome == u'Santander':
             boleto = BoletoSantander()
+        elif banco.nome == u'HSBC':
+            boleto = BoletoHsbc()
         carteira = BoletoCarteira.objects.get(pk=dados['carteira'], ativo=True)
         if not boleto:
             return {"erro": u"Boleto para {} ainda não implementado.".format(banco.nome)}
@@ -115,6 +118,7 @@ class EnviarPedido(Enviar):
             boleto.nosso_numero = str(nosso_numero)
         else:
             boleto.nosso_numero = str(numero_documento)
+
         linha_digitavel = boleto.linha_digitavel
         if tipo == TipoBoleto.linha_digitavel:
             return linha_digitavel

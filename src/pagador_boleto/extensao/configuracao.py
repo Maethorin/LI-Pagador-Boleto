@@ -88,7 +88,7 @@ class ValidarJson(ValidadorBase):
             return u''.join([x for x in s if x.isdigit()])
 
         banco = data.get('banco')
-        bancos_limites = {"2": 5, "1": 7, "6": 8, "4": 6, "7": 7}
+        bancos_limites = {"2": 5, "1": 7, "6": 6, "4": 6, "7": 7, "3": 7}
         for i in ['empresa_cnpj', 'banco_agencia', 'banco_conta', 'banco_convenio']:
             if data.get(i):
                 valor = so_numeros(data[i])
