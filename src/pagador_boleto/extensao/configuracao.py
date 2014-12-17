@@ -127,7 +127,7 @@ class ValidarJson(ValidadorBase):
 
 class Formulario(FormularioBase):
     json = CampoFormulario("json", "", requerido=True, ordem=1, tipo=TipoDeCampo.oculto, formato=FormatoDeCampo.json, validador=ValidarJson)
-    valor_minimo_aceitado = CampoFormulario("valor_minimo_aceitado", u"Valor mínimo", requerido=False, decimais=2, ordem=2, tipo=TipoDeCampo.decimal, texto_ajuda=u"Informe o valor mínimo para aceitar pagamentos por Boleto.")
+    valor_minimo_aceitado = CampoFormulario("valor_minimo_aceitado", u"Valor mínimo", requerido=False, decimais=2, ordem=2, tipo=TipoDeCampo.decimal, texto_ajuda=u"Informe o valor mínimo para exibir essa forma de pagamento")
     desconto_valor = CampoFormulario("desconto_valor", u"Desconto aplicado", requerido=False, ordem=3, tipo=TipoDeCampo.decimal)
     aplicar_no_total = CampoFormulario("aplicar_no_total", u"Aplicar no total?", requerido=False, ordem=4, tipo=TipoDeCampo.boleano, texto_ajuda=u"Aplicar desconto no total da compra (incluir por exemplo o frete).")
 
