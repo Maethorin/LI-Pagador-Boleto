@@ -98,7 +98,7 @@ class EnviarPedido(Enviar):
         boleto.agencia_cedente = dados['banco_agencia'].encode('utf-8')
         boleto.conta_cedente = dados['banco_conta'].encode('utf-8')
         if convenio:
-            if banco.nome == u'Santander':
+            if banco.nome in [u'Santander', u'HSBC']:
                 boleto.conta_cedente = convenio.encode('utf-8')
             else:
                 boleto.convenio = convenio

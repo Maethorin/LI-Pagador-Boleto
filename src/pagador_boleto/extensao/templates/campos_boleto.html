@@ -9,7 +9,7 @@ errosValidacao = errosValidacao.erros.json;
 var errosValidacao = {};
 {% endif %}
 var jsonResultado = {desconto_valor: null, empresa_estado: null, banco_agencia: null, empresa_beneficiario: null, carteira: null, aplicar_no_total: null, linha_2: null, empresa_endereco: null, empresa_cidade: null, linha_1: null, linha_3: null, banco_convenio: null, empresa_cnpj: null, banco: null, banco_conta: null};
-var requeridos = ["empresa_cnpj", "empresa_beneficiario", "empresa_endereco", "empresa_estado", "empresa_cidade", "banco", "carteira", "banco_agencia", "banco_conta"];
+var requeridos = ["empresa_cnpj", "empresa_beneficiario", "empresa_endereco", "empresa_estado", "empresa_cidade", "banco", "carteira", "banco_agencia", "banco_conta", "banco_convenio"];
 var bancoSelecionado = null;
 $(document).ready(function() {
     var preencheCampos = function() {
@@ -67,7 +67,7 @@ $(document).ready(function() {
         $esconder.parents(".form-group").hide();
     });
 
-    var bancosTamanhoConta = {"2": 5, "1": 7, "6": 6, "4": 6, "7": 7, "3": 7};
+    var bancosTamanhoConta = {"2": 5, "1": 7, "6": 6, "4": 6, "7": 8, "3": 5};
     $('#id_banco').change(function() {
         var self = $(this);
         alterar_carteiras(self.val());
@@ -110,8 +110,12 @@ $(document).ready(function() {
             var $helpConvenio = $(".help-convenio");
             $helpConvenio.text("Preencha o código do convênio.");
             if (bancoSelecionado == "7") {
-                $labelConvenio.text("Código PSK:");
-                $helpConvenio.text("Preencha o código do PSK com 7 dígitos.")
+                $labelConvenio.text("Código do Cliente (PSK):");
+                $helpConvenio.text("Preencha o Código Cliente (PSK) com 7 dígitos.")
+            }
+            if (bancoSelecionado == "3") {
+                $labelConvenio.text("Código do Cedente:");
+                $helpConvenio.text("Preencha o Código do Cedente com 7 dígitos.")
             }
         }).change();
     };
@@ -139,11 +143,13 @@ $(document).ready(function() {
                 $formGroup.removeClass("has-error");
                 $formGroup.find(".errorlist").hide();
                 if (!$campoRequerido.val()) {
-                    temErro = true;
-                    $formGroup.addClass("has-error");
-                    $formGroup.find(".errorlist li").remove();
-                    $formGroup.find(".errorlist").append("<li>Este campo é obrigatório</li>");
-                    $formGroup.find(".errorlist").show();
+                    if (campoId != "banco_convenio" || (campoId == "banco_convenio" && ["3", "4", "7"].indexOf($("#id_banco").val()) > -1)) {
+                        temErro = true;
+                        $formGroup.addClass("has-error");
+                        $formGroup.find(".errorlist li").remove();
+                        $formGroup.find(".errorlist").append("<li>Este campo é obrigatório</li>");
+                        $formGroup.find(".errorlist").show();
+                    }
                 }
             }
             if (temErro) {

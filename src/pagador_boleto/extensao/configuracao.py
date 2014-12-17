@@ -89,7 +89,7 @@ class ValidarJson(ValidadorBase):
             return u''.join([x for x in s if x.isdigit()])
 
         banco = data.get('banco')
-        bancos_limites = {"2": 5, "1": 7, "6": 6, "4": 6, "7": 7, "3": 7}
+        bancos_limites = {"2": 5, "1": 7, "6": 6, "4": 6, "7": 8, "3": 5}
         for i in ['empresa_cnpj', 'banco_agencia', 'banco_conta', 'banco_convenio']:
             if data.get(i):
                 valor = so_numeros(data[i])
@@ -101,7 +101,7 @@ class ValidarJson(ValidadorBase):
                     tamanho_atual = len(data[i])
                     if banco == "4" and not tamanho_atual in [6, 7, 8]:
                         self.erros[i] = u"Certifique-se de que o valor tenha 6, 7 ou 8 caracteres (ele possui {}).".format(tamanho_atual)
-                    if banco == "7" and not tamanho_atual == 7:
+                    if banco in ["3", "7"] and not tamanho_atual == 7:
                         self.erros[i] = u"Certifique-se de que o valor tenha 7 caracteres (ele possui {}).".format(tamanho_atual)
 
         if data.get('desconto_valor', None):
