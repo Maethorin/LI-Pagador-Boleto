@@ -9,7 +9,7 @@ def read(fname):
 
 setup(
     name='li-pagador-boleto',
-    version='1.0.4',
+    version='1.0.5',
     url='https://github.com/lojaintegrada/LI-Pagador-Boleto',
     license='MIT',
     description=u'Meio de pagamento usando boleto bancário',
@@ -31,5 +31,5 @@ setup(
     package_dir={'': 'src'},
     include_package_data=True,
     package_data={'pagador_boleto': ['extensao/templates/*']},
-    install_requires=['distribute', 'li-pagador', 'pyboleto==0.2.13']
+    install_requires=['distribute', 'li-pagador']
 )
