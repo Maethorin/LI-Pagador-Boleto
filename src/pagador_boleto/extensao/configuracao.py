@@ -2,6 +2,7 @@
 import json
 import os
 from datetime import date, timedelta
+from decimal import Decimal
 
 from pagador.configuracao.cadastro import CampoFormulario, FormularioBase, TipoDeCampo, CadastroBase, SelecaoBase, FormatoDeCampo, ValidadorBase, caminho_para_template
 from pagador.configuracao.cliente import Script, TipoScript
@@ -126,8 +127,9 @@ class ValidarJson(ValidadorBase):
 
 class Formulario(FormularioBase):
     json = CampoFormulario("json", "", requerido=True, ordem=1, tipo=TipoDeCampo.oculto, formato=FormatoDeCampo.json, validador=ValidarJson)
-    desconto_valor = CampoFormulario("desconto_valor", u"Desconto aplicado", requerido=False, ordem=2, tipo=TipoDeCampo.decimal)
-    aplicar_no_total = CampoFormulario("aplicar_no_total", u"Aplicar no total?", requerido=False, ordem=3, tipo=TipoDeCampo.boleano, texto_ajuda=u"Aplicar desconto no total da compra (incluir por exemplo o frete).")
+    valor_minimo_aceitado = CampoFormulario("valor_minimo_aceitado", u"Valor mínimo", requerido=False, decimais=2, ordem=2, tipo=TipoDeCampo.decimal, texto_ajuda=u"Informe o valor mínimo para aceitar pagamentos por Boleto.")
+    desconto_valor = CampoFormulario("desconto_valor", u"Desconto aplicado", requerido=False, ordem=3, tipo=TipoDeCampo.decimal)
+    aplicar_no_total = CampoFormulario("aplicar_no_total", u"Aplicar no total?", requerido=False, ordem=4, tipo=TipoDeCampo.boleano, texto_ajuda=u"Aplicar desconto no total da compra (incluir por exemplo o frete).")
 
 
 class MeioPagamentoEnvio(object):
@@ -155,6 +157,13 @@ class MeioPagamentoSelecao(SelecaoBase):
     selecao = Script(tipo=TipoScript.html, nome="selecao", caminho_arquivo=caminho_do_arquivo_de_template("selecao.html"), eh_template=True)
 
     def to_dict(self):
+        try:
+            valor_pagamento = Decimal(self.dados.get("valor_pagamento", None))
+        except (ValueError, TypeError):
+            valor_pagamento = None
+        if self.configuracao.valor_minimo_aceitado and valor_pagamento:
+            if valor_pagamento < self.configuracao.valor_minimo_aceitado:
+                return []
         return [
-            self.selecao.to_dict()
+            self.selecao.to_dict(),
         ]
