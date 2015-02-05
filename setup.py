@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+
 from setuptools import setup, find_packages
 
 
@@ -8,7 +9,7 @@ def read(fname):
 
 setup(
     name='li-pagador-boleto',
-    version='1.0.9',
+    version='1.0.10',
     url='https://github.com/lojaintegrada/LI-Pagador-Boleto',
     license='MIT',
     description=u'Meio de pagamento usando boleto bancário',
