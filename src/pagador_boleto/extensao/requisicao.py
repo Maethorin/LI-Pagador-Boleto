@@ -93,8 +93,20 @@ class EnviarPedido(Enviar):
 
         boleto.carteira = carteira.numero.encode('utf-8')
         boleto.cedente = dados['empresa_beneficiario'].encode('utf-8')
-        boleto.cedente_documento = self.formatador.formata_cpf_cnpj(dados['empresa_cnpj'].encode('utf-8'))
-        boleto.cedente_endereco = (u'%s - %s / %s' % (dados['empresa_endereco'], dados['empresa_cidade'], dados['empresa_estado'])).encode('utf-8')[:80]
+
+        tamanho_documento = len(dados['empresa_cnpj'])
+        tipo_documento = "CNPJ" if tamanho_documento == 14 else "CPF"
+        documento = self.formatador.formata_cpf_cnpj(dados['empresa_cnpj'].encode('utf-8'))
+        boleto.cedente_documento = documento
+        documento = " / {}: {}".format(tipo_documento, documento)
+        limite = 80 - len(documento)
+        cidade_estado = u', {}-{}'.format(dados['empresa_cidade'], dados['empresa_estado']).encode('utf-8')
+        limite -= len(cidade_estado)
+        rua = dados['empresa_endereco'].encode('utf-8')[:limite]
+        endereco = '{}{}{}'.format(rua, cidade_estado, documento)
+
+        boleto.cedente_endereco = endereco
+
         boleto.agencia_cedente = dados['banco_agencia'].encode('utf-8')
         boleto.conta_cedente = dados['banco_conta'].encode('utf-8')
         if convenio:
