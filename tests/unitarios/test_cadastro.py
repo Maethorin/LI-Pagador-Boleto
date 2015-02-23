@@ -2,6 +2,8 @@
 import unittest
 from pagador_boleto.reloaded import cadastro
 
+BANCOS = {'341': '2', '237': '1', '104': '6', '001': '4', '033': '7', '399': '3'}
+
 
 class FormularioBoleto(unittest.TestCase):
     def __init__(self, *args, **kwargs):
@@ -193,7 +195,7 @@ class ValidadorBoleto(unittest.TestCase):
             'empresa_estado': None,
             'empresa_endereco': None,
             'empresa_cidade': None,
-            'banco': '001',
+            'banco': BANCOS['001'],
             'carteira': None,
             'banco_agencia': None,
             'banco_conta': None,
@@ -313,7 +315,7 @@ class ValidadorBoleto(unittest.TestCase):
             'empresa_estado': None,
             'empresa_endereco': None,
             'empresa_cidade': None,
-            'banco': '033',
+            'banco': BANCOS['033'],
             'carteira': None,
             'banco_agencia': None,
             'banco_conta': None,
@@ -333,7 +335,7 @@ class ValidadorBoleto(unittest.TestCase):
             'empresa_estado': None,
             'empresa_endereco': None,
             'empresa_cidade': None,
-            'banco': '399',
+            'banco': BANCOS['399'],
             'carteira': None,
             'banco_agencia': None,
             'banco_conta': None,
@@ -353,7 +355,7 @@ class ValidadorBoleto(unittest.TestCase):
             'empresa_estado': None,
             'empresa_endereco': None,
             'empresa_cidade': None,
-            'banco': '341',
+            'banco': BANCOS['341'],
             'carteira': None,
             'banco_agencia': None,
             'banco_conta': '1234',
@@ -373,7 +375,7 @@ class ValidadorBoleto(unittest.TestCase):
             'empresa_estado': None,
             'empresa_endereco': None,
             'empresa_cidade': None,
-            'banco': '237',
+            'banco': BANCOS['237'],
             'carteira': None,
             'banco_agencia': None,
             'banco_conta': '12345678',
@@ -393,7 +395,7 @@ class ValidadorBoleto(unittest.TestCase):
             'empresa_estado': None,
             'empresa_endereco': None,
             'empresa_cidade': None,
-            'banco': '104',
+            'banco': BANCOS['104'],
             'carteira': None,
             'banco_agencia': None,
             'banco_conta': '12345',
@@ -413,7 +415,7 @@ class ValidadorBoleto(unittest.TestCase):
             'empresa_estado': None,
             'empresa_endereco': None,
             'empresa_cidade': None,
-            'banco': '001',
+            'banco': BANCOS['001'],
             'carteira': None,
             'banco_agencia': None,
             'banco_conta': '12345',
@@ -433,7 +435,7 @@ class ValidadorBoleto(unittest.TestCase):
             'empresa_estado': None,
             'empresa_endereco': None,
             'empresa_cidade': None,
-            'banco': '033',
+            'banco': BANCOS['033'],
             'carteira': None,
             'banco_agencia': None,
             'banco_conta': '123456789',
@@ -453,7 +455,7 @@ class ValidadorBoleto(unittest.TestCase):
             'empresa_estado': None,
             'empresa_endereco': None,
             'empresa_cidade': None,
-            'banco': '399',
+            'banco': BANCOS['399'],
             'carteira': None,
             'banco_agencia': None,
             'banco_conta': '123456',

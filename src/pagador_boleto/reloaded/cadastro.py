@@ -50,11 +50,11 @@ class BoletoValidador(cadastro.ValidadorBase):
                     self.erros['empresa_cnpj'] = u'CPF/CNPJ inválido. Deve ter 14 digitos para CNPJ ou 11 para CPF'
                 if campo == 'banco_convenio':
                     tamanho_atual = len(dados_boleto[campo])
-                    if banco == '001' and tamanho_atual not in [6, 7, 8]:
+                    if banco == '4' and tamanho_atual not in [6, 7, 8]:
                         self.erros[campo] = u'Certifique-se de que o valor tenha 6, 7 ou 8 caracteres (ele possui {}).'.format(tamanho_atual)
-                    if banco in ['399', '033'] and not tamanho_atual == 7:
+                    if banco in ['3', '7'] and not tamanho_atual == 7:
                         self.erros[campo] = u'Certifique-se de que o valor tenha 7 caracteres (ele possui {}).'.format(tamanho_atual)
-        bancos_limites = {'341': 5, '237': 7, '104': 6, '001': 6, '033': 8, '399': 5}
+        bancos_limites = {'2': 5, '1': 7, '6': 6, '4': 6, '7': 8, '3': 5}
         if dados_boleto.get('banco_conta') and banco and bancos_limites.get(banco):
             conta = dados_boleto['banco_conta']
             tamanho_atual = len(conta)
