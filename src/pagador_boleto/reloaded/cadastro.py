@@ -71,9 +71,9 @@ class DescontoValidador(cadastro.ValidadorBase):
         try:
             valor = float(self.valor)
             if valor > 100.0 or valor < 0.0:
-                self.erros['desconto_valor'] = u'Porcentagem inválida. Insira um valor entre 0% e 100%.'
+                self.erros = u'Porcentagem inválida. Insira um valor entre 0% e 100%.'
         except ValueError:
-            self.erros['desconto_valor'] = u'Porcentagem inválida. Insira um valor entre 0% e 100%.'
+            self.erros = u'Porcentagem inválida. Insira um valor entre 0% e 100%.'
         return not self.erros
 
 
@@ -82,5 +82,5 @@ class FormularioBoleto(cadastro.Formulario):
 
     ativo = cadastro.CampoFormulario('ativo', 'Pagamento ativo?', requerido=True, tipo=cadastro.TipoDeCampo.boleano, ordem=1)
     valor_minimo_aceitado = cadastro.CampoFormulario('valor_minimo_aceitado', u'Valor mínimo', requerido=False, decimais=2, ordem=2, tipo=cadastro.TipoDeCampo.decimal, texto_ajuda=u'Informe o valor mínimo para exibir esta forma de pagamento.')
-    desconto_valor = cadastro.CampoFormulario('desconto_valor', u'Desconto aplicado', requerido=False, ordem=3, tipo=cadastro.TipoDeCampo.decimal, validador=DescontoValidador)
+    desconto_valor = cadastro.CampoFormulario('desconto_valor', u'Desconto aplicado', requerido=False, ordem=3, decimais=2, tipo=cadastro.TipoDeCampo.decimal, validador=DescontoValidador)
     aplicar_no_total = cadastro.CampoFormulario('aplicar_no_total', u'Aplicar no total?', requerido=False, ordem=4, tipo=cadastro.TipoDeCampo.boleano, texto_ajuda=u'Aplicar desconto no total da compra (incluir por exemplo o frete).')
