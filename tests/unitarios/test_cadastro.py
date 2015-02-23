@@ -485,3 +485,25 @@ class ValidadorBoleto(unittest.TestCase):
         validador = cadastro.BoletoValidador(valor=boleto)
         validador.eh_valido.should.be.equal(True)
         validador.erros.should.be.empty
+
+
+class ValidarDesconto(unittest.TestCase):
+    def test_deve_validar_maior_que_100(self):
+        validador = cadastro.DescontoValidador(valor='123.94')
+        validador.eh_valido.should.be.equal(False)
+        validador.erros.should.be.equal({'desconto_valor': u'Porcentagem inválida. Insira um valor entre 0% e 100%.'})
+
+    def test_deve_validar_menor_que_0(self):
+        validador = cadastro.DescontoValidador(valor='-0.5')
+        validador.eh_valido.should.be.equal(False)
+        validador.erros.should.be.equal({'desconto_valor': u'Porcentagem inválida. Insira um valor entre 0% e 100%.'})
+
+    def test_deve_validar_se_valor_gerar_value_error(self):
+        validador = cadastro.DescontoValidador(valor='asdds')
+        validador.eh_valido.should.be.equal(False)
+        validador.erros.should.be.equal({'desconto_valor': u'Porcentagem inválida. Insira um valor entre 0% e 100%.'})
+
+    def test_deve_retornar_ok_se_valor_for_certo(self):
+        validador = cadastro.DescontoValidador(valor='50.43444')
+        validador.eh_valido.should.be.equal(True)
+        validador.erros.should.be.empty
