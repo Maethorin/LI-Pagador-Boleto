@@ -25,7 +25,7 @@
                     <code id="linhaDigitavel"></code>
                 </div>
                 <div class="botoes-boleto">
-                    <a href="{% url_loja 'checkout_pagador' pedido.numero pagamento.id %}?formato=html" id="imprimirBoleto" class="botao principal" target="_blank"><i class="icon-print fundo-principal"></i> Imprimr Boleto</a>
+                    <a href="{% url_loja 'checkout_pagador' pedido.numero pagamento.id %}?formato=html" id="imprimirBoleto" class="botao principal" target="_blank"><i class="icon-print fundo-principal"></i> Imprimir Boleto</a>
                     <a href="{% url_loja 'checkout_pagador' pedido.numero pagamento.id %}?formato=pdf" id="downloadBoleto" class="botao principal" target="_blank"><i class="icon-download fundo-principal"></i> Download Boleto</a>
                 </div>
             </div>
