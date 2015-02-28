@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import unittest
+from datetime import datetime, timedelta
+from decimal import Decimal
 import mock
 
 from pagador_boleto.reloaded import entidades
@@ -93,7 +95,7 @@ class BoletoConfiguracaoMeioPagamento(unittest.TestCase):
         ]
         carteira_mock.return_value = carteira
         configuracao = entidades.ConfiguracaoMeioPagamento(234)
-        configuracao.carteiras.should.be.equal([{'id': 1, 'nome': 'Nome 1'}, {'id': 2, 'nome': 'Nome 2'}])
+        configuracao.carteiras.should.be.equal([{'id': 1, 'numero': '111', 'nome': 'Nome 1'}, {'id': 2, 'numero': '222', 'nome': 'Nome 2'}])
 
     @mock.patch('pagador_boleto.reloaded.entidades.entidades.CarteiraParaBoleto', autospec=True)
     @mock.patch('pagador_boleto.reloaded.entidades.ConfiguracaoMeioPagamento.preencher_do_gateway', autospec=True)
@@ -119,3 +121,133 @@ class BoletoConfiguracaoMeioPagamento(unittest.TestCase):
         carteira_mock.return_value = carteira
         configuracao = entidades.ConfiguracaoMeioPagamento(234)
         configuracao.banco_carteira.should.be.equal({'10': {'1': {'convenio': True, 'nome': 'Nome 1'}}, '20': {'2': {'convenio': False, 'nome': 'Nome 2'}, '3': {'convenio': False, 'nome': 'Nome 3'}}})
+
+
+class MontandoMalote(unittest.TestCase):
+    def setUp(self):
+        dados_json = {
+            'empresa_beneficiario': 'Beneficiario', 'empresa_cnpj': '12345678901', 'empresa_estado': 'RJ', 'empresa_endereco': u'Endereço Empresa', 'empresa_cidade': 'Rio de Janeiro',
+            'banco': '1',
+            'carteira': '2',
+            'banco_agencia': '1234', 'banco_conta': '234456', 'banco_convenio': None,
+            'linha_1': 'LINHA 1',
+            'linha_2': None,
+            'linha_3': None,
+        }
+        carteiras = [{'id': i, 'nome': 'Carteira {}'.format(i), 'numero': 111 * i} for i in range(1, 4)]
+        bancos = [{'id': i, 'nome': 'Banco {}'.format(i)} for i in range(1, 5)]
+        self.loja_id = 23
+        self.malote = entidades.Malote(mock.MagicMock(loja_id=self.loja_id, json=dados_json, bancos=bancos, carteiras=carteiras))
+        self.pedido = mock.MagicMock()
+        self.pedido.codigo_meio_pagamento = 'boleto'
+        self.pedido.data_criacao = datetime(2015, 2, 28)
+        self.data_documento = self.data_processamento = datetime(2015, 2, 28).date()
+        self.data_vencimento = datetime(2015, 2, 28).date() + timedelta(days=5)
+        self.pedido.valor_total = Decimal('100.40')
+        self.pedido.numero = 1234
+        self.pedido.endereco_pagamento = {
+            'complemento': 'complemento',
+            'endereco': u'Endereço', 'numero': 23,
+            'bairro': 'Bairro', 'cidade': 'Cidade',
+            'estado': 'MG', 'cep': '33555666'
+        }
+        self.pedido.endereco_entrega = {
+            'nome': 'Cliente entrega',
+            'complemento': 'complemento',
+            'endereco': u'Endereço', 'numero': 23,
+            'bairro': 'Bairro', 'cidade': 'Cidade',
+            'estado': 'MG', 'cep': '33555666'
+        }
+
+    def test_deve_ter_propriedades(self):
+        entidades.Malote('configuracao').to_dict().should.be.equal({
+            'banco_agencia': None, 'banco_conta': None, 'banco_convenio': None, 'banco_nome': None, 'carteira_numero': None,
+            'data_documento': None, 'data_processamento': None, 'data_vencimento': None,
+            'empresa_beneficiario': None, 'empresa_cidade': None, 'empresa_cnpj': None, 'empresa_endereco': None, 'empresa_estado': None,
+            'formato': 'linha_digitavel',
+            'linha_1': '', 'linha_2': '', 'linha_3': '',
+            'nosso_numero': None, 'numero_documento': None, 'sacado': None, 'valor_documento': None
+        })
+
+    def test_monta_endereco_completo(self):
+        self.malote.endereco_completo(self.pedido).should.be.equal(u'Endereço, 23, complemento - Bairro, Cidade / MG - CEP: 33555666')
+
+    def test_monta_conteudo(self):
+        self.malote.monta_conteudo(self.pedido, {}, dados={'formato': 'html'})
+        self.malote.to_dict().should.be.equal(
+            {
+                'banco_agencia': '1234', 'banco_conta': '234456', 'banco_convenio': None, 'banco_nome': 'Banco 1', 'carteira_numero': 222,
+                'data_documento': self.data_documento, 'data_processamento': self.data_processamento, 'data_vencimento': self.data_vencimento,
+                'empresa_beneficiario': 'Beneficiario', 'empresa_cnpj': '12345678901', 'empresa_estado': 'RJ', 'empresa_endereco': u'Endereço Empresa', 'empresa_cidade': 'Rio de Janeiro',
+                'formato': 'html',
+                'linha_1': 'LINHA 1', 'linha_2': '', 'linha_3': '',
+                'nosso_numero': None, 'numero_documento': 1234,
+                'sacado': ['Cliente entrega', u'Endereço, 23, complemento - Bairro, Cidade / MG - CEP: 33555666'],
+                'valor_documento': 100.4
+            }
+        )
+
+    def test_monta_conteudo_com_formato_invalido(self):
+        self.malote.monta_conteudo(self.pedido, {}, dados={'formato': 'zas'})
+        self.malote.to_dict().should.be.equal(
+            {
+                'banco_agencia': '1234', 'banco_conta': '234456', 'banco_convenio': None, 'banco_nome': 'Banco 1', 'carteira_numero': 222,
+                'data_documento': self.data_documento, 'data_processamento': self.data_processamento, 'data_vencimento': self.data_vencimento,
+                'empresa_beneficiario': 'Beneficiario', 'empresa_cnpj': '12345678901', 'empresa_estado': 'RJ', 'empresa_endereco': u'Endereço Empresa', 'empresa_cidade': 'Rio de Janeiro',
+                'formato': 'linha_digitavel',
+                'linha_1': 'LINHA 1', 'linha_2': '', 'linha_3': '',
+                'nosso_numero': None, 'numero_documento': 1234,
+                'sacado': ['Cliente entrega', u'Endereço, 23, complemento - Bairro, Cidade / MG - CEP: 33555666'],
+                'valor_documento': 100.4
+            }
+        )
+
+    def test_monta_conteudo_com_formato_padrao(self):
+        self.malote.monta_conteudo(self.pedido, {}, dados={})
+        self.malote.to_dict().should.be.equal(
+            {
+                'banco_agencia': '1234', 'banco_conta': '234456', 'banco_convenio': None, 'banco_nome': 'Banco 1', 'carteira_numero': 222,
+                'data_documento': self.data_documento, 'data_processamento': self.data_processamento, 'data_vencimento': self.data_vencimento,
+                'empresa_beneficiario': 'Beneficiario', 'empresa_cnpj': '12345678901', 'empresa_estado': 'RJ', 'empresa_endereco': u'Endereço Empresa', 'empresa_cidade': 'Rio de Janeiro',
+                'formato': 'linha_digitavel',
+                'linha_1': 'LINHA 1', 'linha_2': '', 'linha_3': '',
+                'nosso_numero': None, 'numero_documento': 1234,
+                'sacado': ['Cliente entrega', u'Endereço, 23, complemento - Bairro, Cidade / MG - CEP: 33555666'],
+                'valor_documento': 100.4
+            }
+        )
+
+    def test_da_erro_se_boleto_nao_tem_um_atributo(self):
+        del self.malote.configuracao.json['banco_convenio']
+        self.malote.monta_conteudo.when.called_with(self.pedido, {}, dados={}).should.throw(
+            entidades.BoletoNaoGerado,
+            u'A configuração do boleto para na loja {} não está preenchida corretamente.'.format(self.loja_id)
+        )
+
+    def test_da_erro_se_carteira_nao_for_encontrada(self):
+        self.malote.configuracao.json['carteira'] = 10
+        self.malote.monta_conteudo.when.called_with(self.pedido, {}, dados={}).should.throw(
+            entidades.BoletoNaoGerado,
+            u'A carteira id 10 definida para o boleto não foi encontrada ativa nas configurações da loja {}'.format(self.loja_id)
+        )
+
+    def test_da_erro_se_banco_nao_for_encontrado(self):
+        self.malote.configuracao.json['banco'] = 10
+        self.malote.monta_conteudo.when.called_with(self.pedido, {}, dados={}).should.throw(
+            entidades.BoletoNaoGerado,
+            u'O banco id 10 definido para o boleto não foi encontrado nas configurações da loja {}'.format(self.loja_id)
+        )
+
+    def test_da_erro_se_json_nao_for_encontrado(self):
+        self.malote.configuracao.json = None
+        self.malote.monta_conteudo.when.called_with(self.pedido, {}, dados={}).should.throw(
+            entidades.BoletoNaoGerado,
+            u'A configuração do boleto para na loja {} não está preenchida.'.format(self.loja_id)
+        )
+
+    def test_da_erro_se_meio_pagamento_do_pedido_nao_for_boleto(self):
+        self.pedido.codigo_meio_pagamento = 'zas'
+        self.malote.monta_conteudo.when.called_with(self.pedido, {}, dados={}).should.throw(
+            entidades.BoletoNaoGerado,
+            u'O pedido {} enviado da loja {} não usa a forma de pagamento por boleto.'.format(self.pedido.numero, self.loja_id)
+        )
