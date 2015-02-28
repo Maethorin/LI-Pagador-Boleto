@@ -244,10 +244,3 @@ class MontandoMalote(unittest.TestCase):
             entidades.BoletoNaoGerado,
             u'A configuração do boleto para na loja {} não está preenchida.'.format(self.loja_id)
         )
-
-    def test_da_erro_se_meio_pagamento_do_pedido_nao_for_boleto(self):
-        self.pedido.codigo_meio_pagamento = 'zas'
-        self.malote.monta_conteudo.when.called_with(self.pedido, {}, dados={}).should.throw(
-            entidades.BoletoNaoGerado,
-            u'O pedido {} enviado da loja {} não usa a forma de pagamento por boleto.'.format(self.pedido.numero, self.loja_id)
-        )

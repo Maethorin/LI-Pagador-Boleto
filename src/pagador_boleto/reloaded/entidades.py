@@ -57,8 +57,6 @@ class Malote(entidades.Malote):
             pedido.endereco_pagamento['cidade'], pedido.endereco_pagamento['estado'], pedido.endereco_pagamento['cep'])
 
     def monta_conteudo(self, pedido, parametros_contrato=None, dados=None):
-        if pedido.codigo_meio_pagamento != CODIGO_MEIO_PAGAMENTO:
-            raise BoletoNaoGerado(u'O pedido {} enviado da loja {} não usa a forma de pagamento por boleto.'.format(pedido.numero, self.configuracao.loja_id))
         if not self.configuracao.json:
             raise BoletoNaoGerado(u'A configuração do boleto para na loja {} não está preenchida.'.format(self.configuracao.loja_id))
         try:
