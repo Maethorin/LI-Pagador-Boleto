@@ -1,0 +1,4 @@
+[run]
+branch = True
+source =
+    pagador_boleto.reloaded
