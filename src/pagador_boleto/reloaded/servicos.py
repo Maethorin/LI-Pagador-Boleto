@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from pagador.reloaded import servicos
 import StringIO
 
 from pyboleto.bank.bancodobrasil import BoletoBB
@@ -11,6 +10,8 @@ from pyboleto.bank.itau import BoletoItau
 from pyboleto.bank.santander import BoletoSantander
 from pyboleto.html import BoletoHTML
 from pyboleto.pdf import BoletoPDF
+
+from pagador.reloaded import servicos
 from pagador_boleto.reloaded import entidades
 
 
@@ -18,18 +19,12 @@ class BoletoInvalido(Exception):
     pass
 
 
-class Resultado(object):
-    def __init__(self, dados):
-        self.sucesso = True
-        self.conteudo = {'dados': dados}
-
-
 class EntregaPagamento(servicos.EntregaPagamento):
     def __init__(self, loja_id, plano_indice=1):
         super(EntregaPagamento, self).__init__(loja_id, plano_indice)
         self.tem_malote = True
 
-    def enviar_pagamento(self, tentativa=1):
+    def processa_dados_de_pagamento(self):
         banco = self.malote.banco_nome
         convenio = self.malote.banco_convenio
         boleto = None
@@ -92,18 +87,18 @@ class EntregaPagamento(servicos.EntregaPagamento):
 
         linha_digitavel = boleto.linha_digitavel
         if self.malote.formato == entidades.TipoBoleto.linha_digitavel:
-            self.resultado = Resultado(linha_digitavel)
+            self.resultado = {'dados': linha_digitavel}
         elif self.malote.formato == entidades.TipoBoleto.html:
             f_html = StringIO.StringIO()
             boleto_html = BoletoHTML(f_html)
             boleto_html.drawBoleto(boleto)
             boleto_html.save()
             f_html.seek(0)
-            self.resultado = Resultado(f_html.read())
+            self.resultado = {'dados': f_html.read()}
         elif self.malote.formato == entidades.TipoBoleto.pdf:
             f_pdf = StringIO.StringIO()
             boleto_pdf = BoletoPDF(f_pdf)
             boleto_pdf.drawBoleto(boleto)
             boleto_pdf.save()
             f_pdf.seek(0)
-            self.resultado = Resultado(unicode(f_pdf.read(), 'ISO-8859-1'))
+            self.resultado = {'dados': unicode(f_pdf.read(), 'ISO-8859-1')}
