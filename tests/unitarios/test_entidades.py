@@ -123,7 +123,7 @@ class BoletoConfiguracaoMeioPagamento(unittest.TestCase):
         configuracao.banco_carteira.should.be.equal({'10': {'1': {'convenio': True, 'nome': 'Nome 1'}}, '20': {'2': {'convenio': False, 'nome': 'Nome 2'}, '3': {'convenio': False, 'nome': 'Nome 3'}}})
 
 
-class MontandoMalote(unittest.TestCase):
+class BoletoMontandoMalote(unittest.TestCase):
     def setUp(self):
         dados_json = {
             'empresa_beneficiario': 'Beneficiario', 'empresa_cnpj': '12345678901', 'empresa_estado': 'RJ', 'empresa_endereco': u'Endereço Empresa', 'empresa_cidade': 'Rio de Janeiro',
