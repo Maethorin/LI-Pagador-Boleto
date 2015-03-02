@@ -117,6 +117,14 @@ $(document).ready(function() {
                 $labelConvenio.text("Código do Beneficiário:");
                 $helpConvenio.text("Preencha o Código do Beneficiário com 7 dígitos.")
             }
+            var $labelConta = $(".label-conta");
+            $labelConta.text("Conta Corrente sem o dígito:");
+            var $helpConta = $(".help-conta");
+            $helpConta.text("Preencha a conta corrente com 7 dígitos.");
+            if (bancoSelecionado == "6") {
+                $labelConta.text("Código do Cedente:");
+                $helpConta.text("Preencha o Código do Cedente com 7 dígitos.")
+            }
         }).change();
     };
 
@@ -343,10 +351,10 @@ $(document).ready(function() {
     </div>
 </div>
 <div class="form-group ">
-    <label for="id_banco_conta" class="control-label col-sm-3">Conta Corrente sem o dígito:</label>
+    <label for="id_banco_conta" class="label-conta control-label col-sm-3">Conta Corrente sem o dígito:</label>
     <div class="col-sm-6">
         <input class="form-control" id="id_banco_conta" maxlength="11" name="banco_conta" value="" type="text" disabled="disabled" />
-        <p class="help-block">Preencha a conta corrente com 7 dígitos.</p>
+        <p class="help-conta help-block">Preencha a conta corrente com 7 dígitos.</p>
         <ul class="errorlist" style="display: none"><li>Este campo é obrigatório.</li></ul>
     </div>
 </div>
