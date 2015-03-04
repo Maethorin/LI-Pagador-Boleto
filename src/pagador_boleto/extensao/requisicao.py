@@ -31,9 +31,9 @@ class EnviarPedido(Enviar):
         super(EnviarPedido, self).__init__(pedido, dados, configuracao_pagamento)
         self.processa_resposta = True
         self.url = None
-        self.deve_gravar_dados_de_pagamento = False
+        self.deve_gravar_dados_pagamento = False
 
-    def obter_situacao_do_pedido(self, status_requisicao):
+    def obter_situacao_pedido(self, status_requisicao):
         return None
 
     @property

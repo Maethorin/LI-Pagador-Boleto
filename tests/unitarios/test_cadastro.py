@@ -188,7 +188,7 @@ class ValidadorBoleto(unittest.TestCase):
         validador.eh_valido.should.be.equal(False)
         validador.erros.should.be.equal({'banco_convenio': u'Informação inválida. Deve conter apenas digitos.'})
 
-    def test_banco_convenio_do_banco_do_brasil_nao_pode_ter_qtd_invalida_de_digitos(self):
+    def test_banco_convenio_banco_brasil_nao_pode_ter_qtd_invalida_digitos(self):
         boleto = {
             'empresa_beneficiario': None,
             'empresa_cnpj': None,
@@ -208,7 +208,7 @@ class ValidadorBoleto(unittest.TestCase):
         validador.eh_valido.should.be.equal(False)
         validador.erros.should.be.equal({'banco_convenio': u'Certifique-se de que o valor tenha 6, 7 ou 8 caracteres (ele possui 3).'})
 
-    def test_banco_convenio_do_banco_do_brasil_pode_ter_6_digitos(self):
+    def test_banco_convenio_banco_brasil_pode_ter_6_digitos(self):
         boleto = {
             'empresa_beneficiario': None,
             'empresa_cnpj': None,
@@ -228,7 +228,7 @@ class ValidadorBoleto(unittest.TestCase):
         validador.eh_valido.should.be.equal(True)
         validador.erros.should.be.empty
 
-    def test_banco_convenio_do_banco_do_brasil_pode_ter_7_digitos(self):
+    def test_banco_convenio_banco_brasil_pode_ter_7_digitos(self):
         boleto = {
             'empresa_beneficiario': None,
             'empresa_cnpj': None,
@@ -248,7 +248,7 @@ class ValidadorBoleto(unittest.TestCase):
         validador.eh_valido.should.be.equal(True)
         validador.erros.should.be.empty
 
-    def test_banco_convenio_do_banco_do_brasil_pode_ter_8_digitos(self):
+    def test_banco_convenio_banco_brasil_pode_ter_8_digitos(self):
         boleto = {
             'empresa_beneficiario': None,
             'empresa_cnpj': None,
@@ -268,7 +268,7 @@ class ValidadorBoleto(unittest.TestCase):
         validador.eh_valido.should.be.equal(True)
         validador.erros.should.be.empty
 
-    def test_banco_convenio_do_santander_deve_ter_7_digitos(self):
+    def test_banco_convenio_santander_deve_ter_7_digitos(self):
         boleto = {
             'empresa_beneficiario': None,
             'empresa_cnpj': None,
@@ -288,7 +288,7 @@ class ValidadorBoleto(unittest.TestCase):
         validador.eh_valido.should.be.equal(True)
         validador.erros.should.be.empty
 
-    def test_banco_convenio_do_hsbc_deve_ter_7_digitos(self):
+    def test_banco_convenio_hsbc_deve_ter_7_digitos(self):
         boleto = {
             'empresa_beneficiario': None,
             'empresa_cnpj': None,
@@ -308,7 +308,7 @@ class ValidadorBoleto(unittest.TestCase):
         validador.eh_valido.should.be.equal(True)
         validador.erros.should.be.empty
 
-    def test_banco_convenio_do_santander_nao_deve_ter_diferente_de_7_digitos(self):
+    def test_banco_convenio_santander_nao_deve_ter_diferente_7_digitos(self):
         boleto = {
             'empresa_beneficiario': None,
             'empresa_cnpj': None,
@@ -328,7 +328,7 @@ class ValidadorBoleto(unittest.TestCase):
         validador.eh_valido.should.be.equal(False)
         validador.erros.should.be.equal({'banco_convenio': u'Certifique-se de que o valor tenha 7 caracteres (ele possui 8).'})
 
-    def test_banco_convenio_do_hsbc_deve_ter_diferente_de_7_digitos(self):
+    def test_banco_convenio_hsbc_deve_ter_diferente_7_digitos(self):
         boleto = {
             'empresa_beneficiario': None,
             'empresa_cnpj': None,
@@ -408,7 +408,7 @@ class ValidadorBoleto(unittest.TestCase):
         validador.eh_valido.should.be.equal(False)
         validador.erros.should.be.equal({'banco_conta': u'Certifique-se de que o valor tenha 6 caracteres (ele possui 5).'})
 
-    def test_banco_do_brasil_deve_ter_conta_com_6_digitos(self):
+    def test_banco_brasil_deve_ter_conta_com_6_digitos(self):
         boleto = {
             'empresa_beneficiario': None,
             'empresa_cnpj': None,

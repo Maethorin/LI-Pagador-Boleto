@@ -96,7 +96,7 @@ class ConfiguracaoMeioPagamento(entidades.ConfiguracaoMeioPagamento):
 
     def __init__(self, loja_id, codigo_pagamento=None):
         super(ConfiguracaoMeioPagamento, self).__init__(loja_id, codigo_pagamento)
-        self.preencher_do_gateway(self._codigo_gateway, self._campos)
+        self.preencher_gateway(self._codigo_gateway, self._campos)
         self.formulario = cadastro.FormularioBoleto()
         if not self.json:
             self.json = cadastro.BOLETO_BASE

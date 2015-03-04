@@ -24,7 +24,7 @@ class EntregaPagamento(servicos.EntregaPagamento):
         super(EntregaPagamento, self).__init__(loja_id, plano_indice)
         self.tem_malote = True
 
-    def processa_dados_de_pagamento(self):
+    def processa_dados_pagamento(self):
         banco = self.malote.banco_nome
         convenio = self.malote.banco_convenio
         boleto = None
