@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import unittest
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from decimal import Decimal
 import mock
 
@@ -174,48 +174,15 @@ class BoletoMontandoMalote(unittest.TestCase):
 
     def test_monta_conteudo(self):
         self.malote.monta_conteudo(self.pedido, {}, dados={'formato': 'html'})
-        self.malote.to_dict().should.be.equal(
-            {
-                'banco_agencia': '1234', 'banco_conta': '234456', 'banco_convenio': None, 'banco_nome': 'Banco 1', 'carteira_numero': 222,
-                'data_documento': self.data_documento, 'data_processamento': self.data_processamento, 'data_vencimento': self.data_vencimento,
-                'empresa_beneficiario': 'Beneficiario', 'empresa_cnpj': '12345678901', 'empresa_estado': 'RJ', 'empresa_endereco': u'Endereço Empresa', 'empresa_cidade': 'Rio de Janeiro',
-                'formato': 'html',
-                'linha_1': 'LINHA 1', 'linha_2': '', 'linha_3': '',
-                'nosso_numero': None, 'numero_documento': 1234,
-                'sacado': ['Cliente entrega', u'Endereço, 23, complemento - Bairro, Cidade / MG - CEP: 33555666'],
-                'valor_documento': 100.4
-            }
-        )
+        self.malote.to_dict().should.be.equal({'banco_agencia': '1234', 'banco_conta': '234456', 'banco_convenio': None, 'banco_nome': 'Banco 1', 'carteira_numero': 222, 'data_documento': date(2015, 2, 28), 'data_processamento': date(2015, 2, 28), 'data_vencimento': date(2015, 3, 5), 'empresa_beneficiario': 'Beneficiario', 'empresa_cidade': 'Rio de Janeiro', 'empresa_cnpj': '12345678901', 'empresa_endereco': 'Endere\xc3\xa7o Empresa', 'empresa_estado': 'RJ', 'formato': 'html', 'linha_1': 'LINHA 1', 'linha_2': '', 'linha_3': '', 'nosso_numero': None, 'numero_documento': 1234, 'sacado': ['Cliente entrega', 'Endere\xc3\xa7o, 23, complemento - Bairro, Cidade / MG - CEP: 33555666'], 'valor_documento': 100.4})
 
     def test_monta_conteudo_com_formato_invalido(self):
         self.malote.monta_conteudo(self.pedido, {}, dados={'formato': 'zas'})
-        self.malote.to_dict().should.be.equal(
-            {
-                'banco_agencia': '1234', 'banco_conta': '234456', 'banco_convenio': None, 'banco_nome': 'Banco 1', 'carteira_numero': 222,
-                'data_documento': self.data_documento, 'data_processamento': self.data_processamento, 'data_vencimento': self.data_vencimento,
-                'empresa_beneficiario': 'Beneficiario', 'empresa_cnpj': '12345678901', 'empresa_estado': 'RJ', 'empresa_endereco': u'Endereço Empresa', 'empresa_cidade': 'Rio de Janeiro',
-                'formato': 'linha_digitavel',
-                'linha_1': 'LINHA 1', 'linha_2': '', 'linha_3': '',
-                'nosso_numero': None, 'numero_documento': 1234,
-                'sacado': ['Cliente entrega', u'Endereço, 23, complemento - Bairro, Cidade / MG - CEP: 33555666'],
-                'valor_documento': 100.4
-            }
-        )
+        self.malote.to_dict().should.be.equal({'banco_agencia': '1234', 'banco_conta': '234456', 'banco_convenio': None, 'banco_nome': 'Banco 1', 'carteira_numero': 222, 'data_documento': date(2015, 2, 28), 'data_processamento': date(2015, 2, 28), 'data_vencimento': date(2015, 3, 5), 'empresa_beneficiario': 'Beneficiario', 'empresa_cidade': 'Rio de Janeiro', 'empresa_cnpj': '12345678901', 'empresa_endereco': 'Endere\xc3\xa7o Empresa', 'empresa_estado': 'RJ', 'formato': 'linha_digitavel', 'linha_1': 'LINHA 1', 'linha_2': '', 'linha_3': '', 'nosso_numero': None, 'numero_documento': 1234, 'sacado': ['Cliente entrega', 'Endere\xc3\xa7o, 23, complemento - Bairro, Cidade / MG - CEP: 33555666'], 'valor_documento': 100.4})
 
     def test_monta_conteudo_com_formato_padrao(self):
         self.malote.monta_conteudo(self.pedido, {}, dados={})
-        self.malote.to_dict().should.be.equal(
-            {
-                'banco_agencia': '1234', 'banco_conta': '234456', 'banco_convenio': None, 'banco_nome': 'Banco 1', 'carteira_numero': 222,
-                'data_documento': self.data_documento, 'data_processamento': self.data_processamento, 'data_vencimento': self.data_vencimento,
-                'empresa_beneficiario': 'Beneficiario', 'empresa_cnpj': '12345678901', 'empresa_estado': 'RJ', 'empresa_endereco': u'Endereço Empresa', 'empresa_cidade': 'Rio de Janeiro',
-                'formato': 'linha_digitavel',
-                'linha_1': 'LINHA 1', 'linha_2': '', 'linha_3': '',
-                'nosso_numero': None, 'numero_documento': 1234,
-                'sacado': ['Cliente entrega', u'Endereço, 23, complemento - Bairro, Cidade / MG - CEP: 33555666'],
-                'valor_documento': 100.4
-            }
-        )
+        self.malote.to_dict().should.be.equal({'banco_agencia': '1234', 'banco_conta': '234456', 'banco_convenio': None, 'banco_nome': 'Banco 1', 'carteira_numero': 222, 'data_documento': date(2015, 2, 28), 'data_processamento': date(2015, 2, 28), 'data_vencimento': date(2015, 3, 5), 'empresa_beneficiario': 'Beneficiario', 'empresa_cidade': 'Rio de Janeiro', 'empresa_cnpj': '12345678901', 'empresa_endereco': 'Endere\xc3\xa7o Empresa', 'empresa_estado': 'RJ', 'formato': 'linha_digitavel', 'linha_1': 'LINHA 1', 'linha_2': '', 'linha_3': '', 'nosso_numero': None, 'numero_documento': 1234, 'sacado': ['Cliente entrega', 'Endere\xc3\xa7o, 23, complemento - Bairro, Cidade / MG - CEP: 33555666'], 'valor_documento': 100.4})
 
     def test_dah_erro_se_boleto_nao_tem_um_atributo(self):
         del self.malote.configuracao.json['banco_convenio']
