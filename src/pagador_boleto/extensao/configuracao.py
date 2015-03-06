@@ -20,7 +20,7 @@ class MeioPagamentoCadastro(CadastroBase):
     @property
     def alerta(self):
         script = Script(tipo=TipoScript.html, nome="alerta")
-        script.adiciona_linha('<div id="alertaAviso" class="alert alert-info" style="margin-top: 20px;">')
+        script.adiciona_linha('<div id="alertaAviso" class="alert alert-danger" style="margin-top: 20px;">')
         script.adiciona_linha(u'    <h4><strong>ATENÇÃO:</strong> Antes de habilitar o pagamento via Boleto Bancário é necessário efetuar a liberação da carteira bancário junto ao seu gerente.</h4>')
         script.adiciona_linha('</div>')
         return script
