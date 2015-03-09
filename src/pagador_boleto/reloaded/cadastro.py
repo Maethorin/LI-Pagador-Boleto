@@ -80,7 +80,7 @@ class DescontoValidador(cadastro.ValidadorBase):
 class FormularioBoleto(cadastro.Formulario):
     boleto = cadastro.CampoFormulario('json', ordem=0, tipo=cadastro.TipoDeCampo.oculto, formato=cadastro.FormatoDeCampo.json, validador=BoletoValidador)
 
-    ativo = cadastro.CampoFormulario('ativo', 'Pagamento ativo?', requerido=True, tipo=cadastro.TipoDeCampo.boleano, ordem=1)
+    ativo = cadastro.CampoFormulario('ativo', 'Pagamento ativo?', tipo=cadastro.TipoDeCampo.boleano, ordem=1)
     valor_minimo_aceitado = cadastro.CampoFormulario('valor_minimo_aceitado', u'Valor mínimo', requerido=False, decimais=2, ordem=2, tipo=cadastro.TipoDeCampo.decimal, texto_ajuda=u'Informe o valor mínimo para exibir esta forma de pagamento.')
     desconto_valor = cadastro.CampoFormulario('desconto_valor', u'Desconto aplicado', requerido=False, ordem=3, decimais=2, tipo=cadastro.TipoDeCampo.decimal, validador=DescontoValidador)
     aplicar_no_total = cadastro.CampoFormulario('aplicar_no_total', u'Aplicar no total?', requerido=False, ordem=4, tipo=cadastro.TipoDeCampo.boleano, texto_ajuda=u'Aplicar desconto no total da compra (incluir por exemplo o frete).')
