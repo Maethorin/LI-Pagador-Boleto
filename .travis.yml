@@ -26,3 +26,6 @@ notifications:
     recipients:
     - contato@awsli.com.br
     - marcio.duarte@lojaintegrada.com.br
+  hipchat:
+    rooms:
+      secure: KPqqeMN7ln+5P2SfGXo1WmJNnsKlF16NxaLvoNrlN0p4FdICpG65td4w+afh+7pvYTCC7GOu3KJ2EgZ6ZRrk+N5spQlLBjrkeOnkQDF6685ATxC8sVe9vIGxa+tUZJto4NBT6PeK2V7vCXEbRZe44CbmgH0Zljj4fnPQBLaE7Xg=
