@@ -11,7 +11,7 @@ from pyboleto.bank.santander import BoletoSantander
 from pyboleto.html import BoletoHTML
 from pyboleto.pdf import BoletoPDF
 
-from pagador.reloaded import servicos
+from pagador import servicos
 from pagador_boleto.reloaded import entidades
 
 

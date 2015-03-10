@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import datetime
 
-from pagador.reloaded import entidades
+from pagador import entidades
 from pagador_boleto.reloaded import cadastro
 
 CODIGO_GATEWAY = 8
