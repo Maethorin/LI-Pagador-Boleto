@@ -12,7 +12,7 @@ from pyboleto.html import BoletoHTML
 from pyboleto.pdf import BoletoPDF
 
 from pagador import servicos
-from pagador_boleto.reloaded import entidades
+from pagador_boleto import entidades
 
 
 class BoletoInvalido(Exception):

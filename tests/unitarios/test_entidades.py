@@ -2,9 +2,10 @@
 import unittest
 from datetime import datetime, timedelta, date
 from decimal import Decimal
+
 import mock
 
-from pagador_boleto.reloaded import entidades
+from pagador_boleto import entidades
 
 
 class BoletoConfiguracaoMeioPagamento(unittest.TestCase):
@@ -19,32 +20,32 @@ class BoletoConfiguracaoMeioPagamento(unittest.TestCase):
     def test_deve_ter_codigo_gateway(self):
         entidades.ConfiguracaoMeioPagamento._codigo_gateway.should.be.equal(self.codigo_gateway)
 
-    @mock.patch('pagador_boleto.reloaded.entidades.entidades.CarteiraParaBoleto', autospec=True)
-    @mock.patch('pagador_boleto.reloaded.entidades.ConfiguracaoMeioPagamento.preencher_gateway', autospec=True)
+    @mock.patch('pagador_boleto.entidades.entidades.CarteiraParaBoleto', autospec=True)
+    @mock.patch('pagador_boleto.entidades.ConfiguracaoMeioPagamento.preencher_gateway', autospec=True)
     def test_deve_preencher_gateway_na_inicializacao(self, preencher_mock, carteira_mock):
         configuracao = entidades.ConfiguracaoMeioPagamento(234)
         preencher_mock.assert_called_with(configuracao, self.codigo_gateway, self.campos)
 
-    @mock.patch('pagador_boleto.reloaded.entidades.entidades.CarteiraParaBoleto', autospec=True)
-    @mock.patch('pagador_boleto.reloaded.entidades.ConfiguracaoMeioPagamento.preencher_gateway', autospec=True)
+    @mock.patch('pagador_boleto.entidades.entidades.CarteiraParaBoleto', autospec=True)
+    @mock.patch('pagador_boleto.entidades.ConfiguracaoMeioPagamento.preencher_gateway', autospec=True)
     def test_deve_definir_formulario_na_inicializacao(self, preencher_mock, carteira_mock):
         configuracao = entidades.ConfiguracaoMeioPagamento(234)
-        configuracao.formulario.should.be.a('pagador_boleto.reloaded.cadastro.FormularioBoleto')
+        configuracao.formulario.should.be.a('pagador_boleto.cadastro.FormularioBoleto')
 
-    @mock.patch('pagador_boleto.reloaded.entidades.entidades.CarteiraParaBoleto', autospec=True)
-    @mock.patch('pagador_boleto.reloaded.entidades.ConfiguracaoMeioPagamento.preencher_gateway', autospec=True)
+    @mock.patch('pagador_boleto.entidades.entidades.CarteiraParaBoleto', autospec=True)
+    @mock.patch('pagador_boleto.entidades.ConfiguracaoMeioPagamento.preencher_gateway', autospec=True)
     def test_deve_nao_ser_aplicacao(self, preencher_mock, carteira_mock):
         configuracao = entidades.ConfiguracaoMeioPagamento(234)
         configuracao.eh_aplicacao.should.be.falsy
 
-    @mock.patch('pagador_boleto.reloaded.entidades.entidades.CarteiraParaBoleto', autospec=True)
-    @mock.patch('pagador_boleto.reloaded.entidades.ConfiguracaoMeioPagamento.preencher_gateway', autospec=True)
+    @mock.patch('pagador_boleto.entidades.entidades.CarteiraParaBoleto', autospec=True)
+    @mock.patch('pagador_boleto.entidades.ConfiguracaoMeioPagamento.preencher_gateway', autospec=True)
     def test_deve_ter_json_padrao_se_nao_tiver_ainda(self, preencher_mock, carteira_mock):
         configuracao = entidades.ConfiguracaoMeioPagamento(234)
         configuracao.json.should.be.equal(entidades.cadastro.BOLETO_BASE)
 
-    @mock.patch('pagador_boleto.reloaded.entidades.entidades.CarteiraParaBoleto', autospec=True)
-    @mock.patch('pagador_boleto.reloaded.entidades.ConfiguracaoMeioPagamento.preencher_gateway', autospec=True)
+    @mock.patch('pagador_boleto.entidades.entidades.CarteiraParaBoleto', autospec=True)
+    @mock.patch('pagador_boleto.entidades.ConfiguracaoMeioPagamento.preencher_gateway', autospec=True)
     def test_deve_dizer_que_esta_configurado(self, preencher_mock, carteira_mock):
         configuracao = entidades.ConfiguracaoMeioPagamento(234)
         configuracao.json = {
@@ -64,8 +65,8 @@ class BoletoConfiguracaoMeioPagamento(unittest.TestCase):
         }
         configuracao.configurado.should.be.falsy
 
-    @mock.patch('pagador_boleto.reloaded.entidades.entidades.CarteiraParaBoleto', autospec=True)
-    @mock.patch('pagador_boleto.reloaded.entidades.ConfiguracaoMeioPagamento.preencher_gateway', autospec=True)
+    @mock.patch('pagador_boleto.entidades.entidades.CarteiraParaBoleto', autospec=True)
+    @mock.patch('pagador_boleto.entidades.ConfiguracaoMeioPagamento.preencher_gateway', autospec=True)
     def test_deve_dizer_que_estah_configurado(self, preencher_mock, carteira_mock):
         configuracao = entidades.ConfiguracaoMeioPagamento(234)
         configuracao.json = {
@@ -85,8 +86,8 @@ class BoletoConfiguracaoMeioPagamento(unittest.TestCase):
         }
         configuracao.configurado.should.be.truthy
 
-    @mock.patch('pagador_boleto.reloaded.entidades.entidades.CarteiraParaBoleto', autospec=True)
-    @mock.patch('pagador_boleto.reloaded.entidades.ConfiguracaoMeioPagamento.preencher_gateway', autospec=True)
+    @mock.patch('pagador_boleto.entidades.entidades.CarteiraParaBoleto', autospec=True)
+    @mock.patch('pagador_boleto.entidades.ConfiguracaoMeioPagamento.preencher_gateway', autospec=True)
     def test_definir_carteiras(self, preencher_mock, carteira_mock):
         carteira = mock.MagicMock()
         carteira.listar_ativas.return_value = [
@@ -97,8 +98,8 @@ class BoletoConfiguracaoMeioPagamento(unittest.TestCase):
         configuracao = entidades.ConfiguracaoMeioPagamento(234)
         configuracao.carteiras.should.be.equal([{'id': 1, 'numero': '111', 'nome': 'Nome 1'}, {'id': 2, 'numero': '222', 'nome': 'Nome 2'}])
 
-    @mock.patch('pagador_boleto.reloaded.entidades.entidades.CarteiraParaBoleto', autospec=True)
-    @mock.patch('pagador_boleto.reloaded.entidades.ConfiguracaoMeioPagamento.preencher_gateway', autospec=True)
+    @mock.patch('pagador_boleto.entidades.entidades.CarteiraParaBoleto', autospec=True)
+    @mock.patch('pagador_boleto.entidades.ConfiguracaoMeioPagamento.preencher_gateway', autospec=True)
     def test_definir_bancos(self, preencher_mock, carteira_mock):
         carteira = mock.MagicMock()
         carteira.listar_ativas.return_value = [
@@ -109,8 +110,8 @@ class BoletoConfiguracaoMeioPagamento(unittest.TestCase):
         configuracao = entidades.ConfiguracaoMeioPagamento(234)
         configuracao.bancos.should.be.equal([{'id': 10, 'nome': 'Banco A'}, {'id': 20, 'nome': 'Banco B'}])
 
-    @mock.patch('pagador_boleto.reloaded.entidades.entidades.CarteiraParaBoleto', autospec=True)
-    @mock.patch('pagador_boleto.reloaded.entidades.ConfiguracaoMeioPagamento.preencher_gateway', autospec=True)
+    @mock.patch('pagador_boleto.entidades.entidades.CarteiraParaBoleto', autospec=True)
+    @mock.patch('pagador_boleto.entidades.ConfiguracaoMeioPagamento.preencher_gateway', autospec=True)
     def test_definir_banco_carteira(self, preencher_mock, carteira_mock):
         carteira = mock.MagicMock()
         carteira.listar_ativas.return_value = [

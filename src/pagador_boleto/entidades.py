@@ -2,7 +2,7 @@
 import datetime
 
 from pagador import entidades
-from pagador_boleto.reloaded import cadastro
+from pagador_boleto import cadastro
 
 CODIGO_GATEWAY = 8
 CODIGO_MEIO_PAGAMENTO = 'boleto'

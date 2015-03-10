@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import unittest
-from pagador_boleto.reloaded import cadastro
+
+from pagador_boleto import cadastro
+
 
 BANCOS = {'341': '2', '237': '1', '104': '6', '001': '4', '033': '7', '399': '3'}
 
