@@ -30,5 +30,5 @@ notifications:
     rooms:
       secure: hsJeTqSvGHz2RG2fXIoYDf0TK4YsnTivbH8tvazGNh1QlcRtf7oh5xNZiVvTkcvl5+Uon11C80z2dlHY/kqd9ryENkzXTp424q4U5paC/q7wuqAZBC8hD/zIC9cISyfxVo413nJ4sgeVg77hdJp3EVYFIQvNSFBF2sGe8Gcfyws=
     template:
-      - '%{result} - %{repository_name}#%{build_number} (%{branch} - %{commit} : %{author}) (<a href="%{build_url}">Detalhes</a>/<a href="%{compare_url}">Alterações</a>)'
+      - '%{result} - %{repository_name}#%{build_number} (%{branch} - %{commit} : %{author}) (<a href="%{build_url}">Detalhes</a>/<a href="%{compare_url}">Altera&ccedil;&otilde;es</a>)'
     format: html
