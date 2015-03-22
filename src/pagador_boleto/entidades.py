@@ -114,6 +114,8 @@ class ConfiguracaoMeioPagamento(entidades.ConfiguracaoMeioPagamento):
 
     @property
     def configurado(self):
+        if not self.json:
+            return False
         return (
             self.json['empresa_beneficiario'] is not None and
             self.json['empresa_cnpj'] is not None and

@@ -46,7 +46,14 @@ class BoletoConfiguracaoMeioPagamento(unittest.TestCase):
 
     @mock.patch('pagador_boleto.entidades.entidades.CarteiraParaBoleto', autospec=True)
     @mock.patch('pagador_boleto.entidades.ConfiguracaoMeioPagamento.preencher_gateway', autospec=True)
-    def test_deve_dizer_que_esta_configurado(self, preencher_mock, carteira_mock):
+    def test_deve_dizer_que_nao_estah_configurado_se_json_for_none(self, preencher_mock, carteira_mock):
+        configuracao = entidades.ConfiguracaoMeioPagamento(234)
+        configuracao.json = None
+        configuracao.configurado.should.be.falsy
+
+    @mock.patch('pagador_boleto.entidades.entidades.CarteiraParaBoleto', autospec=True)
+    @mock.patch('pagador_boleto.entidades.ConfiguracaoMeioPagamento.preencher_gateway', autospec=True)
+    def test_deve_dizer_que_nao_estah_configurado_se_for_tudo_none(self, preencher_mock, carteira_mock):
         configuracao = entidades.ConfiguracaoMeioPagamento(234)
         configuracao.json = {
             'empresa_beneficiario': None,
