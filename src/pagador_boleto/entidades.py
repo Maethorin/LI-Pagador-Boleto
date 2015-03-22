@@ -51,7 +51,7 @@ class Malote(entidades.Malote):
     def endereco_completo(self, pedido):
         complemento = pedido.endereco_pagamento['complemento'] or ''
         if complemento:
-            complemento = ', {}'.format(complemento)
+            complemento = u', {}'.format(complemento)
         return u'{}, {}{} - {}, {} / {} - CEP: {}'.format(
             pedido.endereco_pagamento['endereco'], pedido.endereco_pagamento['numero'], complemento, pedido.endereco_pagamento['bairro'],
             pedido.endereco_pagamento['cidade'], pedido.endereco_pagamento['estado'], pedido.endereco_pagamento['cep'])
