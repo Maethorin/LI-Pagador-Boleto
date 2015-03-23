@@ -24,6 +24,13 @@ class EntregaPagamento(servicos.EntregaPagamento):
         super(EntregaPagamento, self).__init__(loja_id, plano_indice, dados=dados)
         self.tem_malote = True
 
+    def define_pedido_e_configuracao(self, pedido_numero):
+        try:
+            super(EntregaPagamento, self).define_pedido_e_configuracao(pedido_numero)
+        except servicos.EnvioDePagamentoInvalido, ex:
+            if pedido_numero != 'TESTE-BOLETO':
+                raise ex
+
     def processa_dados_pagamento(self):
         banco = self.malote.banco_nome
         convenio = self.malote.banco_convenio
