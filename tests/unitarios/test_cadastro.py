@@ -502,6 +502,11 @@ class ValidarDesconto(unittest.TestCase):
         validador.eh_valido.should.be.equal(False)
         validador.erros.should.be.equal(u'Porcentagem inválida. Insira um valor entre 0% e 100%.')
 
+    def test_deve_validar_none(self):
+        validador = cadastro.DescontoValidador(valor=None)
+        validador.eh_valido.should.be.equal(False)
+        validador.erros.should.be.equal(u'Porcentagem inválida. Insira um valor entre 0% e 100%.')
+
     def test_deve_validar_se_valor_gerar_value_error(self):
         validador = cadastro.DescontoValidador(valor='asdds')
         validador.eh_valido.should.be.equal(False)

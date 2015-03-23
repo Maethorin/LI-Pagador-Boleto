@@ -72,7 +72,7 @@ class DescontoValidador(cadastro.ValidadorBase):
             valor = float(self.valor)
             if valor > 100.0 or valor < 0.0:
                 self.erros = u'Porcentagem inválida. Insira um valor entre 0% e 100%.'
-        except ValueError:
+        except (TypeError, ValueError):
             self.erros = u'Porcentagem inválida. Insira um valor entre 0% e 100%.'
         return not self.erros
 
