@@ -199,11 +199,27 @@ class BoletoMontandoMalote(unittest.TestCase):
             u'A configuração do boleto para na loja {} não está preenchida corretamente.'.format(self.loja_id)
         )
 
+    def test_dah_erro_se_boleto_nao_tem_um_atributo_em_caso_de_teste(self):
+        del self.malote.configuracao.json['banco_convenio']
+        self.pedido.numero = 1011001100
+        self.malote.monta_conteudo.when.called_with(self.pedido, {}, dados={}).should.throw(
+            entidades.BoletoNaoGerado,
+            u'Você precisa preencher e salvar as alterações antes de emitir um boleto de teste.'
+        )
+
     def test_dah_erro_se_carteira_nao_for_encontrada(self):
         self.malote.configuracao.json['carteira'] = 10
         self.malote.monta_conteudo.when.called_with(self.pedido, {}, dados={}).should.throw(
             entidades.BoletoNaoGerado,
             u'A carteira id 10 definida para o boleto não foi encontrada ativa nas configurações da loja {}'.format(self.loja_id)
+        )
+
+    def test_dah_erro_se_carteira_nao_for_encontrada_em_caso_de_teste(self):
+        self.malote.configuracao.json['carteira'] = 10
+        self.pedido.numero = 1011001100
+        self.malote.monta_conteudo.when.called_with(self.pedido, {}, dados={}).should.throw(
+            entidades.BoletoNaoGerado,
+            u'Você precisa preencher e salvar as alterações antes de emitir um boleto de teste.'
         )
 
     def test_dah_erro_se_banco_nao_for_encontrado(self):
@@ -213,9 +229,25 @@ class BoletoMontandoMalote(unittest.TestCase):
             u'O banco id 10 definido para o boleto não foi encontrado nas configurações da loja {}'.format(self.loja_id)
         )
 
+    def test_dah_erro_se_banco_nao_for_encontrado_em_caso_de_teste(self):
+        self.malote.configuracao.json['banco'] = 10
+        self.pedido.numero = 1011001100
+        self.malote.monta_conteudo.when.called_with(self.pedido, {}, dados={}).should.throw(
+            entidades.BoletoNaoGerado,
+            u'Você precisa preencher e salvar as alterações antes de emitir um boleto de teste.'
+        )
+
     def test_dah_erro_se_json_nao_for_encontrado(self):
         self.malote.configuracao.json = None
         self.malote.monta_conteudo.when.called_with(self.pedido, {}, dados={}).should.throw(
             entidades.BoletoNaoGerado,
             u'A configuração do boleto para na loja {} não está preenchida.'.format(self.loja_id)
+        )
+
+    def test_dah_erro_se_json_nao_for_encontrado_em_caso_de_teste(self):
+        self.malote.configuracao.json = None
+        self.pedido.numero = 1011001100
+        self.malote.monta_conteudo.when.called_with(self.pedido, {}, dados={}).should.throw(
+            entidades.BoletoNaoGerado,
+            u'Você precisa preencher e salvar as alterações antes de emitir um boleto de teste.'
         )

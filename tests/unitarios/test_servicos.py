@@ -171,3 +171,27 @@ class BoletoEntregandoPagamento(unittest.TestCase):
         entrega.malote = self.malote
         entrega.processa_dados_pagamento()
         entrega.resultado.should.be.equal({'dados': 'BOLETO_PDF'})
+
+    @mock.patch('pagador.servicos.EntregaPagamento.define_pedido_e_configuracao')
+    def test_deve_definir_pedido_e_configuracao(self, define_mock):
+        entrega = servicos.EntregaPagamento(234)
+        entrega.define_pedido_e_configuracao(1234)
+        define_mock.assert_called_with(1234)
+
+    @mock.patch('pagador.servicos.EntregaPagamento.define_pedido_e_configuracao')
+    def test_definir_pedido_e_configuracao_nao_trata_erro_se_for_teste_e_nao_for_erro_especifico(self, define_mock):
+        define_mock.side_effect = ValueError('ZAS')
+        entrega = servicos.EntregaPagamento(234)
+        entrega.define_pedido_e_configuracao.when.called_with('TESTE-BOLETO').should.throw(ValueError, 'ZAS')
+
+    @mock.patch('pagador.servicos.EntregaPagamento.define_pedido_e_configuracao')
+    def test_definir_pedido_e_configuracao_trata_erro_se_for_teste_e_for_erro_especifico(self, define_mock):
+        define_mock.side_effect = servicos.servicos.EnvioDePagamentoInvalido('Esse passa')
+        entrega = servicos.EntregaPagamento(234)
+        entrega.define_pedido_e_configuracao('TESTE-BOLETO')
+
+    @mock.patch('pagador.servicos.EntregaPagamento.define_pedido_e_configuracao')
+    def test_definir_pedido_e_configuracao_nao_trata_erro_se_nao_for_teste_e_for_erro_especifico(self, define_mock):
+        define_mock.side_effect = servicos.servicos.EnvioDePagamentoInvalido('Esse passa')
+        entrega = servicos.EntregaPagamento(234)
+        entrega.define_pedido_e_configuracao.when.called_with(1234).should.throw(servicos.servicos.EnvioDePagamentoInvalido, 'Esse passa')

@@ -56,17 +56,22 @@ class Malote(entidades.Malote):
             pedido.endereco_pagamento['endereco'], pedido.endereco_pagamento['numero'], complemento, pedido.endereco_pagamento['bairro'],
             pedido.endereco_pagamento['cidade'], pedido.endereco_pagamento['estado'], pedido.endereco_pagamento['cep'])
 
+    def _dispara_excecao(self, pedido, mensagem):
+        if pedido.numero == 1011001100:
+            mensagem = u'Você precisa preencher e salvar as alterações antes de emitir um boleto de teste.'
+        raise BoletoNaoGerado(mensagem)
+
     def monta_conteudo(self, pedido, parametros_contrato=None, dados=None):
         if not self.configuracao.json:
-            raise BoletoNaoGerado(u'A configuração do boleto para na loja {} não está preenchida.'.format(self.configuracao.loja_id))
+            self._dispara_excecao(pedido, u'A configuração do boleto para na loja {} não está preenchida.'.format(self.configuracao.loja_id))
         try:
             self.banco_nome = [banco['nome'] for banco in self.configuracao.bancos if int(banco['id']) == int(self.configuracao.json['banco'])][0]
-        except (ValueError, IndexError):
-            raise BoletoNaoGerado(u'O banco id {} definido para o boleto não foi encontrado nas configurações da loja {}'.format(self.configuracao.json['banco'], self.configuracao.loja_id))
+        except (ValueError, IndexError, TypeError):
+            self._dispara_excecao(pedido, u'O banco id {} definido para o boleto não foi encontrado nas configurações da loja {}'.format(self.configuracao.json['banco'], self.configuracao.loja_id))
         try:
             self.carteira_numero = [carteira['numero'] for carteira in self.configuracao.carteiras if int(carteira['id']) == int(self.configuracao.json['carteira'])][0]
         except (ValueError, IndexError):
-            raise BoletoNaoGerado(u'A carteira id {} definida para o boleto não foi encontrada ativa nas configurações da loja {}'.format(self.configuracao.json['carteira'], self.configuracao.loja_id))
+            self._dispara_excecao(pedido, u'A carteira id {} definida para o boleto não foi encontrada ativa nas configurações da loja {}'.format(self.configuracao.json['carteira'], self.configuracao.loja_id))
 
         try:
             for chave in cadastro.BOLETO_BASE:
@@ -76,7 +81,7 @@ class Malote(entidades.Malote):
                         valor = ''
                     setattr(self, chave, valor)
         except KeyError:
-            raise BoletoNaoGerado(u'A configuração do boleto para na loja {} não está preenchida corretamente.'.format(self.configuracao.loja_id))
+            self._dispara_excecao(pedido, u'A configuração do boleto para na loja {} não está preenchida corretamente.'.format(self.configuracao.loja_id))
         self.sacado = [pedido.endereco_entrega['nome'], self.endereco_completo(pedido)]
         self.formato = TipoBoleto.linha_digitavel
         if 'formato' in dados:
