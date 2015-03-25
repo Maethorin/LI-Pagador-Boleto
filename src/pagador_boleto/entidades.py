@@ -102,20 +102,21 @@ class ConfiguracaoMeioPagamento(entidades.ConfiguracaoMeioPagamento):
         self.codigo_gateway = CODIGO_GATEWAY
         self.eh_gateway = True
         super(ConfiguracaoMeioPagamento, self).__init__(loja_id, codigo_pagamento, eh_listagem=eh_listagem)
-        self.formulario = cadastro.FormularioBoleto()
-        if not self.json:
-            self.json = cadastro.BOLETO_BASE
-        carteiras = entidades.CarteiraParaBoleto().listar_ativas()
-        self.carteiras = [{'id': carteira.id, 'nome': carteira.nome, 'numero': carteira.numero} for carteira in carteiras]
-        self.bancos = [{'id': banco[0], 'nome': banco[1]} for banco in set([(carteira.banco_id, carteira.banco_nome) for carteira in carteiras])]
-        self.banco_carteira = {}
-        for banco in self.bancos:
-            _carteiras = [carteira for carteira in carteiras if carteira.banco_id == banco['id']]
-            if _carteiras:
-                banco_id = str(banco['id'])
-                self.banco_carteira[banco_id] = {}
-                for carteira in _carteiras:
-                    self.banco_carteira[banco_id][str(carteira.id)] = {'nome': carteira.nome, 'convenio': carteira.convenio}
+        if not self.eh_listagem:
+            self.formulario = cadastro.FormularioBoleto()
+            if not self.json:
+                self.json = cadastro.BOLETO_BASE
+            carteiras = entidades.CarteiraParaBoleto().listar_ativas()
+            self.carteiras = [{'id': carteira.id, 'nome': carteira.nome, 'numero': carteira.numero} for carteira in carteiras]
+            self.bancos = [{'id': banco[0], 'nome': banco[1]} for banco in set([(carteira.banco_id, carteira.banco_nome) for carteira in carteiras])]
+            self.banco_carteira = {}
+            for banco in self.bancos:
+                _carteiras = [carteira for carteira in carteiras if carteira.banco_id == banco['id']]
+                if _carteiras:
+                    banco_id = str(banco['id'])
+                    self.banco_carteira[banco_id] = {}
+                    for carteira in _carteiras:
+                        self.banco_carteira[banco_id][str(carteira.id)] = {'nome': carteira.nome, 'convenio': carteira.convenio}
 
     @property
     def configurado(self):
