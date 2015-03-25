@@ -97,11 +97,11 @@ class Malote(entidades.Malote):
 
 class ConfiguracaoMeioPagamento(entidades.ConfiguracaoMeioPagamento):
 
-    def __init__(self, loja_id, codigo_pagamento=None):
-        self.campos = ['ativo', 'valor_minimo_aceitado', 'desconto_valor', 'aplicar_no_total', 'json']
+    def __init__(self, loja_id, codigo_pagamento=None, eh_listagem=False):
+        self.campos = ['ativo', 'valor_minimo_aceitado', 'desconto', 'desconto_valor', 'aplicar_no_total', 'json']
         self.codigo_gateway = CODIGO_GATEWAY
         self.eh_gateway = True
-        super(ConfiguracaoMeioPagamento, self).__init__(loja_id, codigo_pagamento)
+        super(ConfiguracaoMeioPagamento, self).__init__(loja_id, codigo_pagamento, eh_listagem)
         self.formulario = cadastro.FormularioBoleto()
         if not self.json:
             self.json = cadastro.BOLETO_BASE

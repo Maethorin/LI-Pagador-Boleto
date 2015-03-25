@@ -31,16 +31,22 @@ class FormularioBoleto(unittest.TestCase):
         self.formulario.valor_minimo_aceitado.label.should.be.equal(u'Valor mínimo')
         self.formulario.valor_minimo_aceitado.tipo.should.be.equal(cadastro.cadastro.TipoDeCampo.decimal)
 
+    def test_deve_ter_desconto(self):
+        self.formulario.tem_desconto.nome.should.be.equal('desconto')
+        self.formulario.tem_desconto.ordem.should.be.equal(3)
+        self.formulario.tem_desconto.label.should.be.equal(u'Usar desconto?')
+        self.formulario.tem_desconto.tipo.should.be.equal(cadastro.cadastro.TipoDeCampo.boleano)
+
     def test_deve_ter_desconto_valor(self):
         self.formulario.desconto_valor.nome.should.be.equal('desconto_valor')
-        self.formulario.desconto_valor.ordem.should.be.equal(3)
+        self.formulario.desconto_valor.ordem.should.be.equal(4)
         self.formulario.desconto_valor.label.should.be.equal(u'Desconto aplicado')
         self.formulario.desconto_valor.tipo.should.be.equal(cadastro.cadastro.TipoDeCampo.decimal)
         self.formulario.desconto_valor.validador.should.be.equal(cadastro.DescontoValidador)
 
     def test_deve_ter_aplicar_no_total(self):
         self.formulario.aplicar_no_total.nome.should.be.equal('aplicar_no_total')
-        self.formulario.aplicar_no_total.ordem.should.be.equal(4)
+        self.formulario.aplicar_no_total.ordem.should.be.equal(5)
         self.formulario.aplicar_no_total.label.should.be.equal(u'Aplicar no total?')
         self.formulario.aplicar_no_total.tipo.should.be.equal(cadastro.cadastro.TipoDeCampo.boleano)
 
