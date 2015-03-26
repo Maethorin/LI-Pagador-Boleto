@@ -205,7 +205,7 @@ class BoletoMontandoMalote(unittest.TestCase):
 
     def test_dah_erro_se_boleto_nao_tem_um_atributo_em_caso_de_teste(self):
         del self.malote.configuracao.json['banco_convenio']
-        self.pedido.numero = 1011001100
+        self.pedido.numero = 10110011
         self.malote.monta_conteudo.when.called_with(self.pedido, {}, dados={}).should.throw(
             entidades.BoletoNaoGerado,
             u'Você precisa preencher e salvar as alterações antes de emitir um boleto de teste.'
@@ -220,7 +220,7 @@ class BoletoMontandoMalote(unittest.TestCase):
 
     def test_dah_erro_se_carteira_nao_for_encontrada_em_caso_de_teste(self):
         self.malote.configuracao.json['carteira'] = 10
-        self.pedido.numero = 1011001100
+        self.pedido.numero = 10110011
         self.malote.monta_conteudo.when.called_with(self.pedido, {}, dados={}).should.throw(
             entidades.BoletoNaoGerado,
             u'Você precisa preencher e salvar as alterações antes de emitir um boleto de teste.'
@@ -235,7 +235,7 @@ class BoletoMontandoMalote(unittest.TestCase):
 
     def test_dah_erro_se_banco_nao_for_encontrado_em_caso_de_teste(self):
         self.malote.configuracao.json['banco'] = 10
-        self.pedido.numero = 1011001100
+        self.pedido.numero = 10110011
         self.malote.monta_conteudo.when.called_with(self.pedido, {}, dados={}).should.throw(
             entidades.BoletoNaoGerado,
             u'Você precisa preencher e salvar as alterações antes de emitir um boleto de teste.'
@@ -250,7 +250,7 @@ class BoletoMontandoMalote(unittest.TestCase):
 
     def test_dah_erro_se_json_nao_for_encontrado_em_caso_de_teste(self):
         self.malote.configuracao.json = None
-        self.pedido.numero = 1011001100
+        self.pedido.numero = 10110011
         self.malote.monta_conteudo.when.called_with(self.pedido, {}, dados={}).should.throw(
             entidades.BoletoNaoGerado,
             u'Você precisa preencher e salvar as alterações antes de emitir um boleto de teste.'
