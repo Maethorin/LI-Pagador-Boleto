@@ -123,15 +123,15 @@ class ConfiguracaoMeioPagamento(entidades.ConfiguracaoMeioPagamento):
         if not self.json:
             return False
         return (
-            self.json['empresa_beneficiario'] is not None and
-            self.json['empresa_cnpj'] is not None and
-            self.json['empresa_estado'] is not None and
-            self.json['empresa_endereco'] is not None and
-            self.json['empresa_cidade'] is not None and
-            self.json['banco'] is not None and
-            self.json['carteira'] is not None and
-            self.json['banco_agencia'] is not None and
-            self.json['banco_conta'] is not None and
-            self.json['banco_convenio'] is not None and
-            self.json['linha_1'] is not None
+            self.json.get('empresa_beneficiario', None) is not None and
+            self.json.get('empresa_cnpj', None) is not None and
+            self.json.get('empresa_estado', None) is not None and
+            self.json.get('empresa_endereco', None) is not None and
+            self.json.get('empresa_cidade', None) is not None and
+            self.json.get('banco', None) is not None and
+            self.json.get('carteira', None) is not None and
+            self.json.get('banco_agencia', None) is not None and
+            self.json.get('banco_conta', None) is not None and
+            self.json.get('banco_convenio', None) is not None and
+            self.json.get('linha_1', None) is not None
         )
