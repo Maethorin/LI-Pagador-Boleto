@@ -57,7 +57,7 @@ class Malote(entidades.Malote):
             pedido.endereco_pagamento['cidade'], pedido.endereco_pagamento['estado'], pedido.endereco_pagamento['cep'])
 
     def _dispara_excecao(self, pedido, mensagem):
-        if pedido.numero == 10110011:
+        if pedido.numero == 236:
             mensagem = u'Você precisa preencher e salvar as alterações antes de emitir um boleto de teste.'
         raise BoletoNaoGerado(mensagem)
 
