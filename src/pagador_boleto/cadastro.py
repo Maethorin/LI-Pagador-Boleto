@@ -9,12 +9,13 @@ BOLETO_BASE = {
     'empresa_estado': None,
     'empresa_endereco': None,
     'empresa_cidade': None,
+    'dias_vencimento': 2,
     'banco': None,
     'carteira': None,
     'banco_agencia': None,
     'banco_conta': None,
     'banco_convenio': None,
-    'linha_1': None,
+    'linha_1': u'SR CAIXA NÃO ACEITAR APÓS VENCIMENTO.',
     'linha_2': None,
     'linha_3': None,
 }
@@ -61,7 +62,8 @@ class BoletoValidador(cadastro.ValidadorBase):
             tamanho_necessario = bancos_limites[dados_boleto['banco']]
             if tamanho_atual != tamanho_necessario:
                 self.erros['banco_conta'] = u'Certifique-se de que o valor tenha {} caracteres (ele possui {}).'.format(tamanho_necessario, tamanho_atual)
-
+        if int(dados_boleto.get('dias_vencimento', 0) or 0) <= 0:
+            self.erros['dias_vencimento'] = u'Dias para o vencimento deve ser maior que 0 (zero).'
         return not self.erros
 
 

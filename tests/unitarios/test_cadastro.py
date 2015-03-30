@@ -69,6 +69,7 @@ class ValidadorBoleto(unittest.TestCase):
         validador.erros['atributos'].should.contain(u"Não foi enviado o atributo empresa_cidade no boleto {'sem_atributos': 1}")
         validador.erros['atributos'].should.contain(u"Não foi enviado o atributo banco no boleto {'sem_atributos': 1}")
         validador.erros['atributos'].should.contain(u"Não foi enviado o atributo carteira no boleto {'sem_atributos': 1}")
+        validador.erros['atributos'].should.contain(u"Não foi enviado o atributo dias_vencimento no boleto {'sem_atributos': 1}")
         validador.erros['atributos'].should.contain(u"Não foi enviado o atributo banco_agencia no boleto {'sem_atributos': 1}")
         validador.erros['atributos'].should.contain(u"Não foi enviado o atributo banco_conta no boleto {'sem_atributos': 1}")
         validador.erros['atributos'].should.contain(u"Não foi enviado o atributo banco_convenio no boleto {'sem_atributos': 1}")
@@ -83,6 +84,7 @@ class ValidadorBoleto(unittest.TestCase):
             'empresa_estado': None,
             'empresa_endereco': None,
             'empresa_cidade': None,
+            'dias_vencimento': 2,
             'banco': None,
             'carteira': None,
             'banco_agencia': None,
@@ -103,6 +105,7 @@ class ValidadorBoleto(unittest.TestCase):
             'empresa_estado': None,
             'empresa_endereco': None,
             'empresa_cidade': None,
+            'dias_vencimento': 2,
             'banco': None,
             'carteira': None,
             'banco_agencia': None,
@@ -123,6 +126,7 @@ class ValidadorBoleto(unittest.TestCase):
             'empresa_estado': None,
             'empresa_endereco': None,
             'empresa_cidade': None,
+            'dias_vencimento': 2,
             'banco': None,
             'carteira': None,
             'banco_agencia': None,
@@ -143,6 +147,7 @@ class ValidadorBoleto(unittest.TestCase):
             'empresa_estado': None,
             'empresa_endereco': None,
             'empresa_cidade': None,
+            'dias_vencimento': 2,
             'banco': None,
             'carteira': None,
             'banco_agencia': '12w3',
@@ -156,6 +161,69 @@ class ValidadorBoleto(unittest.TestCase):
         validador.eh_valido.should.be.equal(False)
         validador.erros.should.be.equal({'banco_agencia': u'Informação inválida. Deve conter apenas digitos.'})
 
+    def test_dias_vencimento_nao_pode_ser_none(self):
+        boleto = {
+            'empresa_beneficiario': None,
+            'empresa_cnpj': None,
+            'empresa_estado': None,
+            'empresa_endereco': None,
+            'empresa_cidade': None,
+            'dias_vencimento': None,
+            'banco': None,
+            'carteira': None,
+            'banco_agencia': None,
+            'banco_conta': None,
+            'banco_convenio': None,
+            'linha_1': None,
+            'linha_2': None,
+            'linha_3': None,
+        }
+        validador = cadastro.BoletoValidador(valor=boleto)
+        validador.eh_valido.should.be.equal(False)
+        validador.erros.should.be.equal({'dias_vencimento': u'Dias para o vencimento deve ser maior que 0 (zero).'})
+
+    def test_dias_vencimento_nao_pode_ser_zero(self):
+        boleto = {
+            'empresa_beneficiario': None,
+            'empresa_cnpj': None,
+            'empresa_estado': None,
+            'empresa_endereco': None,
+            'empresa_cidade': None,
+            'dias_vencimento': 0,
+            'banco': None,
+            'carteira': None,
+            'banco_agencia': None,
+            'banco_conta': None,
+            'banco_convenio': None,
+            'linha_1': None,
+            'linha_2': None,
+            'linha_3': None,
+        }
+        validador = cadastro.BoletoValidador(valor=boleto)
+        validador.eh_valido.should.be.equal(False)
+        validador.erros.should.be.equal({'dias_vencimento': u'Dias para o vencimento deve ser maior que 0 (zero).'})
+
+    def test_dias_vencimento_nao_pode_ser_menor_que_zero(self):
+        boleto = {
+            'empresa_beneficiario': None,
+            'empresa_cnpj': None,
+            'empresa_estado': None,
+            'empresa_endereco': None,
+            'empresa_cidade': None,
+            'dias_vencimento': -1,
+            'banco': None,
+            'carteira': None,
+            'banco_agencia': None,
+            'banco_conta': None,
+            'banco_convenio': None,
+            'linha_1': None,
+            'linha_2': None,
+            'linha_3': None,
+        }
+        validador = cadastro.BoletoValidador(valor=boleto)
+        validador.eh_valido.should.be.equal(False)
+        validador.erros.should.be.equal({'dias_vencimento': u'Dias para o vencimento deve ser maior que 0 (zero).'})
+
     def test_banco_conta_deve_ter_somente_digitos(self):
         boleto = {
             'empresa_beneficiario': None,
@@ -163,6 +231,7 @@ class ValidadorBoleto(unittest.TestCase):
             'empresa_estado': None,
             'empresa_endereco': None,
             'empresa_cidade': None,
+            'dias_vencimento': 2,
             'banco': None,
             'carteira': None,
             'banco_agencia': None,
@@ -183,6 +252,7 @@ class ValidadorBoleto(unittest.TestCase):
             'empresa_estado': None,
             'empresa_endereco': None,
             'empresa_cidade': None,
+            'dias_vencimento': 2,
             'banco': None,
             'carteira': None,
             'banco_agencia': None,
@@ -203,6 +273,7 @@ class ValidadorBoleto(unittest.TestCase):
             'empresa_estado': None,
             'empresa_endereco': None,
             'empresa_cidade': None,
+            'dias_vencimento': 2,
             'banco': BANCOS['001'],
             'carteira': None,
             'banco_agencia': None,
@@ -223,6 +294,7 @@ class ValidadorBoleto(unittest.TestCase):
             'empresa_estado': None,
             'empresa_endereco': None,
             'empresa_cidade': None,
+            'dias_vencimento': 2,
             'banco': '001',
             'carteira': None,
             'banco_agencia': None,
@@ -243,6 +315,7 @@ class ValidadorBoleto(unittest.TestCase):
             'empresa_estado': None,
             'empresa_endereco': None,
             'empresa_cidade': None,
+            'dias_vencimento': 2,
             'banco': '001',
             'carteira': None,
             'banco_agencia': None,
@@ -263,6 +336,7 @@ class ValidadorBoleto(unittest.TestCase):
             'empresa_estado': None,
             'empresa_endereco': None,
             'empresa_cidade': None,
+            'dias_vencimento': 2,
             'banco': '001',
             'carteira': None,
             'banco_agencia': None,
@@ -283,6 +357,7 @@ class ValidadorBoleto(unittest.TestCase):
             'empresa_estado': None,
             'empresa_endereco': None,
             'empresa_cidade': None,
+            'dias_vencimento': 2,
             'banco': '033',
             'carteira': None,
             'banco_agencia': None,
@@ -303,6 +378,7 @@ class ValidadorBoleto(unittest.TestCase):
             'empresa_estado': None,
             'empresa_endereco': None,
             'empresa_cidade': None,
+            'dias_vencimento': 2,
             'banco': '399',
             'carteira': None,
             'banco_agencia': None,
@@ -323,6 +399,7 @@ class ValidadorBoleto(unittest.TestCase):
             'empresa_estado': None,
             'empresa_endereco': None,
             'empresa_cidade': None,
+            'dias_vencimento': 2,
             'banco': BANCOS['033'],
             'carteira': None,
             'banco_agencia': None,
@@ -343,6 +420,7 @@ class ValidadorBoleto(unittest.TestCase):
             'empresa_estado': None,
             'empresa_endereco': None,
             'empresa_cidade': None,
+            'dias_vencimento': 2,
             'banco': BANCOS['399'],
             'carteira': None,
             'banco_agencia': None,
@@ -363,6 +441,7 @@ class ValidadorBoleto(unittest.TestCase):
             'empresa_estado': None,
             'empresa_endereco': None,
             'empresa_cidade': None,
+            'dias_vencimento': 2,
             'banco': BANCOS['341'],
             'carteira': None,
             'banco_agencia': None,
@@ -383,6 +462,7 @@ class ValidadorBoleto(unittest.TestCase):
             'empresa_estado': None,
             'empresa_endereco': None,
             'empresa_cidade': None,
+            'dias_vencimento': 2,
             'banco': BANCOS['237'],
             'carteira': None,
             'banco_agencia': None,
@@ -403,6 +483,7 @@ class ValidadorBoleto(unittest.TestCase):
             'empresa_estado': None,
             'empresa_endereco': None,
             'empresa_cidade': None,
+            'dias_vencimento': 2,
             'banco': BANCOS['104'],
             'carteira': None,
             'banco_agencia': None,
@@ -423,6 +504,7 @@ class ValidadorBoleto(unittest.TestCase):
             'empresa_estado': None,
             'empresa_endereco': None,
             'empresa_cidade': None,
+            'dias_vencimento': 2,
             'banco': BANCOS['001'],
             'carteira': None,
             'banco_agencia': None,
@@ -443,6 +525,7 @@ class ValidadorBoleto(unittest.TestCase):
             'empresa_estado': None,
             'empresa_endereco': None,
             'empresa_cidade': None,
+            'dias_vencimento': 2,
             'banco': BANCOS['033'],
             'carteira': None,
             'banco_agencia': None,
@@ -463,6 +546,7 @@ class ValidadorBoleto(unittest.TestCase):
             'empresa_estado': None,
             'empresa_endereco': None,
             'empresa_cidade': None,
+            'dias_vencimento': 2,
             'banco': BANCOS['399'],
             'carteira': None,
             'banco_agencia': None,
@@ -483,6 +567,7 @@ class ValidadorBoleto(unittest.TestCase):
             'empresa_estado': 'RJ',
             'empresa_endereco': 'Endereco',
             'empresa_cidade': 'Cidade',
+            'dias_vencimento': 2,
             'banco': '341',
             'carteira': '18',
             'banco_agencia': '1234',

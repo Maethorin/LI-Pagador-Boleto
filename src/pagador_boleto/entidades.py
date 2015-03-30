@@ -33,6 +33,7 @@ class Malote(entidades.Malote):
         self.numero_documento = None
         self.nosso_numero = None
         self.formato = TipoBoleto.linha_digitavel
+        self.dias_vencimento = 2
         self.sacado = None
         self.empresa_beneficiario = None
         self.empresa_cnpj = None
@@ -76,7 +77,11 @@ class Malote(entidades.Malote):
         try:
             for chave in cadastro.BOLETO_BASE:
                 if hasattr(self, chave):
-                    valor = self.configuracao.json[chave]
+                    #TODO: este if é só para garantir que usuários atuais não tenha erro se o json deles não tiverem o dias_vencimento. Depois que normalizar, retirar
+                    if chave == 'dias_vencimento':
+                        valor = 2
+                    else:
+                        valor = self.configuracao.json[chave]
                     if chave.startswith('linha') and not valor:
                         valor = ''
                     setattr(self, chave, valor)
@@ -90,7 +95,7 @@ class Malote(entidades.Malote):
             self.formato = TipoBoleto.linha_digitavel
         self.data_processamento = pedido.data_criacao.date()
         self.data_documento = pedido.data_criacao.date()
-        self.data_vencimento = pedido.data_criacao.date() + datetime.timedelta(days=5)
+        self.data_vencimento = pedido.data_criacao.date() + datetime.timedelta(days=int(self.dias_vencimento))
         self.valor_documento = pedido.valor_total
         self.numero_documento = pedido.numero
 
@@ -110,6 +115,8 @@ class ConfiguracaoMeioPagamento(entidades.ConfiguracaoMeioPagamento):
             self.carteiras = [{'id': carteira.id, 'nome': carteira.nome, 'numero': carteira.numero} for carteira in carteiras]
             self.bancos = [{'id': banco[0], 'nome': banco[1]} for banco in set([(carteira.banco_id, carteira.banco_nome) for carteira in carteiras])]
             self.banco_carteira = {}
+            if 'dias_vencimento' not in self.json:
+                self.json['dias_vencimento'] = 2
             for banco in self.bancos:
                 _carteiras = [carteira for carteira in carteiras if carteira.banco_id == banco['id']]
                 if _carteiras:
