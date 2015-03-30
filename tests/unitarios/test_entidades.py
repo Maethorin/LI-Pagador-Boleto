@@ -141,6 +141,7 @@ class BoletoMontandoMalote(unittest.TestCase):
             'empresa_beneficiario': 'Beneficiario', 'empresa_cnpj': '12345678901', 'empresa_estado': 'RJ', 'empresa_endereco': u'Endereço Empresa', 'empresa_cidade': 'Rio de Janeiro',
             'banco': '1',
             'carteira': '2',
+            'dias_vencimento': 2,
             'banco_agencia': '1234', 'banco_conta': '234456', 'banco_convenio': None,
             'linha_1': 'LINHA 1',
             'linha_2': None,
@@ -154,7 +155,7 @@ class BoletoMontandoMalote(unittest.TestCase):
         self.pedido.codigo_meio_pagamento = 'boleto'
         self.pedido.data_criacao = datetime(2015, 2, 28)
         self.data_documento = self.data_processamento = datetime(2015, 2, 28).date()
-        self.data_vencimento = datetime(2015, 2, 28).date() + timedelta(days=5)
+        self.data_vencimento = datetime(2015, 2, 28).date() + timedelta(days=2)
         self.pedido.valor_total = Decimal('100.40')
         self.pedido.numero = 1234
         self.pedido.endereco_pagamento = {
@@ -187,6 +188,11 @@ class BoletoMontandoMalote(unittest.TestCase):
     def test_monta_conteudo(self):
         self.malote.monta_conteudo(self.pedido, {}, dados={'formato': 'html'})
         self.malote.to_dict().should.be.equal({'banco_agencia': '1234', 'banco_conta': '234456', 'banco_convenio': None, 'banco_nome': 'Banco 1', 'carteira_numero': 222, 'data_documento': date(2015, 2, 28), 'data_processamento': date(2015, 2, 28), 'data_vencimento': date(2015, 3, 2), 'dias_vencimento': 2, 'empresa_beneficiario': 'Beneficiario', 'empresa_cidade': 'Rio de Janeiro', 'empresa_cnpj': '12345678901', 'empresa_endereco': 'Endere\xc3\xa7o Empresa', 'empresa_estado': 'RJ', 'formato': 'html', 'linha_1': 'LINHA 1', 'linha_2': '', 'linha_3': '', 'nosso_numero': None, 'numero_documento': 1234, 'sacado': ['Cliente entrega', 'Endere\xc3\xa7o, 23, complemento - Bairro, Cidade / MG - CEP: 33555666'], 'valor_documento': 100.4})
+
+    def test_monta_conteudo_respeitando_dia_vencimento(self):
+        self.malote.configuracao.json['dias_vencimento'] = 8
+        self.malote.monta_conteudo(self.pedido, {}, dados={'formato': 'html'})
+        self.malote.to_dict().should.be.equal({'banco_agencia': '1234', 'banco_conta': '234456', 'banco_convenio': None, 'banco_nome': 'Banco 1', 'carteira_numero': 222, 'data_documento': date(2015, 2, 28), 'data_processamento': date(2015, 2, 28), 'data_vencimento': date(2015, 3, 8), 'dias_vencimento': 8, 'empresa_beneficiario': 'Beneficiario', 'empresa_cidade': 'Rio de Janeiro', 'empresa_cnpj': '12345678901', 'empresa_endereco': 'Endere\xc3\xa7o Empresa', 'empresa_estado': 'RJ', 'formato': 'html', 'linha_1': 'LINHA 1', 'linha_2': '', 'linha_3': '', 'nosso_numero': None, 'numero_documento': 1234, 'sacado': ['Cliente entrega', 'Endere\xc3\xa7o, 23, complemento - Bairro, Cidade / MG - CEP: 33555666'], 'valor_documento': 100.4})
 
     def test_monta_conteudo_com_formato_invalido(self):
         self.malote.monta_conteudo(self.pedido, {}, dados={'formato': 'zas'})

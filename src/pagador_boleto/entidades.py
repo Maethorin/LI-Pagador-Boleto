@@ -79,7 +79,7 @@ class Malote(entidades.Malote):
                 if hasattr(self, chave):
                     #TODO: este if é só para garantir que usuários atuais não tenha erro se o json deles não tiverem o dias_vencimento. Depois que normalizar, retirar
                     if chave == 'dias_vencimento':
-                        valor = 2
+                        valor = self.configuracao.json.get(chave, 2)
                     else:
                         valor = self.configuracao.json[chave]
                     if chave.startswith('linha') and not valor:
