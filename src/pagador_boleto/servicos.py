@@ -27,7 +27,7 @@ class EntregaPagamento(servicos.EntregaPagamento):
     def define_pedido_e_configuracao(self, pedido_numero):
         try:
             super(EntregaPagamento, self).define_pedido_e_configuracao(pedido_numero)
-        except servicos.EnvioDePagamentoInvalido, ex:
+        except self.EnvioDePagamentoInvalido, ex:
             if pedido_numero != 'TESTE-BOLETO':
                 raise ex
 
