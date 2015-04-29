@@ -18,10 +18,6 @@ class TipoBoleto(object):
         return formato in [prop for prop in dir(cls) if not prop.startswith('__')]
 
 
-class BoletoNaoGerado(Exception):
-    pass
-
-
 class Malote(entidades.Malote):
     def __init__(self, configuracao):
         super(Malote, self).__init__(configuracao)
@@ -60,7 +56,7 @@ class Malote(entidades.Malote):
     def _dispara_excecao(self, pedido, mensagem):
         if pedido.numero == 236:
             mensagem = u'Você precisa preencher e salvar as alterações antes de emitir um boleto de teste.'
-        raise BoletoNaoGerado(mensagem)
+        raise self.DadosInvalidos(mensagem)
 
     def monta_conteudo(self, pedido, parametros_contrato=None, dados=None):
         if not self.configuracao.json:
