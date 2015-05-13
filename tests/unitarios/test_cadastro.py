@@ -434,7 +434,7 @@ class ValidadorBoleto(unittest.TestCase):
         validador.eh_valido.should.be.equal(False)
         validador.erros.should.be.equal({'banco_convenio': u'Certifique-se de que o valor tenha 7 caracteres (ele possui 6).'})
 
-    def test_banco_itau_deve_ter_conta_com_5_digitos(self):
+    def test_banco_itau_deve_ter_conta_com_6_digitos(self):
         boleto = {
             'empresa_beneficiario': None,
             'empresa_cnpj': None,
@@ -445,7 +445,7 @@ class ValidadorBoleto(unittest.TestCase):
             'banco': BANCOS['341'],
             'carteira': None,
             'banco_agencia': None,
-            'banco_conta': '1234',
+            'banco_conta': '10405',
             'banco_convenio': None,
             'linha_1': None,
             'linha_2': None,
@@ -453,9 +453,9 @@ class ValidadorBoleto(unittest.TestCase):
         }
         validador = cadastro.BoletoValidador(valor=boleto)
         validador.eh_valido.should.be.equal(False)
-        validador.erros.should.be.equal({'banco_conta': u'Certifique-se de que o valor tenha 5 caracteres (ele possui 4).'})
+        validador.erros.should.be.equal({'banco_conta': u'Certifique-se de que o valor tenha 6 caracteres (ele possui 5).'})
 
-    def test_banco_bradesco_deve_ter_conta_com_7_digitos(self):
+    def test_banco_bradesco_deve_ter_conta_com_8_digitos(self):
         boleto = {
             'empresa_beneficiario': None,
             'empresa_cnpj': None,
@@ -466,7 +466,7 @@ class ValidadorBoleto(unittest.TestCase):
             'banco': BANCOS['237'],
             'carteira': None,
             'banco_agencia': None,
-            'banco_conta': '12345678',
+            'banco_conta': '123456789',
             'banco_convenio': None,
             'linha_1': None,
             'linha_2': None,
@@ -474,9 +474,9 @@ class ValidadorBoleto(unittest.TestCase):
         }
         validador = cadastro.BoletoValidador(valor=boleto)
         validador.eh_valido.should.be.equal(False)
-        validador.erros.should.be.equal({'banco_conta': u'Certifique-se de que o valor tenha 7 caracteres (ele possui 8).'})
+        validador.erros.should.be.equal({'banco_conta': u'Certifique-se de que o valor tenha 8 caracteres (ele possui 9).'})
 
-    def test_banco_caixa_deve_ter_conta_com_6_digitos(self):
+    def test_banco_caixa_deve_ter_conta_com_7_digitos(self):
         boleto = {
             'empresa_beneficiario': None,
             'empresa_cnpj': None,
@@ -495,9 +495,9 @@ class ValidadorBoleto(unittest.TestCase):
         }
         validador = cadastro.BoletoValidador(valor=boleto)
         validador.eh_valido.should.be.equal(False)
-        validador.erros.should.be.equal({'banco_conta': u'Certifique-se de que o valor tenha 6 caracteres (ele possui 5).'})
+        validador.erros.should.be.equal({'banco_conta': u'Certifique-se de que o valor tenha 7 caracteres (ele possui 5).'})
 
-    def test_banco_brasil_deve_ter_conta_com_6_digitos(self):
+    def test_banco_brasil_deve_ter_conta_com_7_digitos(self):
         boleto = {
             'empresa_beneficiario': None,
             'empresa_cnpj': None,
@@ -506,6 +506,48 @@ class ValidadorBoleto(unittest.TestCase):
             'empresa_cidade': None,
             'dias_vencimento': 2,
             'banco': BANCOS['001'],
+            'carteira': None,
+            'banco_agencia': None,
+            'banco_conta': '123456',
+            'banco_convenio': None,
+            'linha_1': None,
+            'linha_2': None,
+            'linha_3': None,
+        }
+        validador = cadastro.BoletoValidador(valor=boleto)
+        validador.eh_valido.should.be.equal(False)
+        validador.erros.should.be.equal({'banco_conta': u'Certifique-se de que o valor tenha 7 caracteres (ele possui 6).'})
+
+    def test_banco_santander_deve_ter_conta_com_9_digitos(self):
+        boleto = {
+            'empresa_beneficiario': None,
+            'empresa_cnpj': None,
+            'empresa_estado': None,
+            'empresa_endereco': None,
+            'empresa_cidade': None,
+            'dias_vencimento': 2,
+            'banco': BANCOS['033'],
+            'carteira': None,
+            'banco_agencia': None,
+            'banco_conta': '1234567890',
+            'banco_convenio': None,
+            'linha_1': None,
+            'linha_2': None,
+            'linha_3': None,
+        }
+        validador = cadastro.BoletoValidador(valor=boleto)
+        validador.eh_valido.should.be.equal(False)
+        validador.erros.should.be.equal({'banco_conta': u'Certifique-se de que o valor tenha 9 caracteres (ele possui 10).'})
+
+    def test_banco_hsbc_deve_ter_conta_com_6_digitos(self):
+        boleto = {
+            'empresa_beneficiario': None,
+            'empresa_cnpj': None,
+            'empresa_estado': None,
+            'empresa_endereco': None,
+            'empresa_cidade': None,
+            'dias_vencimento': 2,
+            'banco': BANCOS['399'],
             'carteira': None,
             'banco_agencia': None,
             'banco_conta': '12345',
@@ -517,48 +559,6 @@ class ValidadorBoleto(unittest.TestCase):
         validador = cadastro.BoletoValidador(valor=boleto)
         validador.eh_valido.should.be.equal(False)
         validador.erros.should.be.equal({'banco_conta': u'Certifique-se de que o valor tenha 6 caracteres (ele possui 5).'})
-
-    def test_banco_santander_deve_ter_conta_com_8_digitos(self):
-        boleto = {
-            'empresa_beneficiario': None,
-            'empresa_cnpj': None,
-            'empresa_estado': None,
-            'empresa_endereco': None,
-            'empresa_cidade': None,
-            'dias_vencimento': 2,
-            'banco': BANCOS['033'],
-            'carteira': None,
-            'banco_agencia': None,
-            'banco_conta': '123456789',
-            'banco_convenio': None,
-            'linha_1': None,
-            'linha_2': None,
-            'linha_3': None,
-        }
-        validador = cadastro.BoletoValidador(valor=boleto)
-        validador.eh_valido.should.be.equal(False)
-        validador.erros.should.be.equal({'banco_conta': u'Certifique-se de que o valor tenha 8 caracteres (ele possui 9).'})
-
-    def test_banco_hspc_deve_ter_conta_com_5_digitos(self):
-        boleto = {
-            'empresa_beneficiario': None,
-            'empresa_cnpj': None,
-            'empresa_estado': None,
-            'empresa_endereco': None,
-            'empresa_cidade': None,
-            'dias_vencimento': 2,
-            'banco': BANCOS['399'],
-            'carteira': None,
-            'banco_agencia': None,
-            'banco_conta': '123456',
-            'banco_convenio': None,
-            'linha_1': None,
-            'linha_2': None,
-            'linha_3': None,
-        }
-        validador = cadastro.BoletoValidador(valor=boleto)
-        validador.eh_valido.should.be.equal(False)
-        validador.erros.should.be.equal({'banco_conta': u'Certifique-se de que o valor tenha 5 caracteres (ele possui 6).'})
 
     def test_retorna_ok_com_tudo_preenchido(self):
         boleto = {
