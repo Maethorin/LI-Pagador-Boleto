@@ -9,7 +9,7 @@ def read(fname):
 
 setup(
     name='li-pagador-boleto',
-    version='2.0.17',
+    version='2.0.18',
     url='https://github.com/lojaintegrada/LI-Pagador-Boleto',
     license='MIT',
     description=u'Meio de pagamento usando boleto bancário',
