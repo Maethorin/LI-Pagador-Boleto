@@ -70,7 +70,7 @@ class EntregaPagamento(servicos.EntregaPagamento):
         boleto.agencia_cedente = self.malote.banco_agencia.encode('utf-8')
         boleto.conta_cedente = self.malote.banco_conta.encode('utf-8')
         if convenio:
-            if banco in [u'Santander', u'HSBC']:
+            if banco in [u'Santander', u'HSBC', u'Bradesco', u'Caixa Econômica']:
                 boleto.conta_cedente = convenio.encode('utf-8')
             else:
                 boleto.convenio = convenio
