@@ -179,7 +179,7 @@ class BoletoMontandoMalote(unittest.TestCase):
             'empresa_beneficiario': None, 'empresa_cidade': None, 'empresa_cnpj': None, 'empresa_endereco': None, 'empresa_estado': None,
             'formato': 'linha_digitavel',
             'linha_1': '', 'linha_2': '', 'linha_3': '',
-            'nosso_numero': None, 'numero_documento': None, 'sacado': None, 'valor_documento': None
+            'nosso_numero': None, 'numero_documento': None, 'sacado': None, 'sacado_documento': None, 'valor_documento': None
         })
 
     def test_monta_endereco_completo(self):
