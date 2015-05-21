@@ -86,7 +86,7 @@ class EntregaPagamento(servicos.EntregaPagamento):
             sacado = [sacado]
         boleto.sacado = sacado
         boleto.sacado = [self.formatador.string_para_ascii(texto) or texto for texto in boleto.sacado]
-        boleto.sacado_documento = self.formatador.formata_cpf_cnpj(self.malote.sacado_documento)
+        boleto.sacado_documento = str(self.formatador.formata_cpf_cnpj(self.malote.sacado_documento))
         boleto.numero_documento = str(self.malote.numero_documento)
         if self.malote.nosso_numero:
             boleto.nosso_numero = str(self.malote.nosso_numero)
