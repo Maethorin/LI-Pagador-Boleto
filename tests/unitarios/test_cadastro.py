@@ -53,13 +53,13 @@ class FormularioBoleto(unittest.TestCase):
 
 class ValidadorBoleto(unittest.TestCase):
     def test_deve_adicionar_erro_se_nao_for_dicionario(self):
-        validador = cadastro.BoletoValidador(valor='nao-eh-dict')
+        validador = cadastro.BoletoValidador(valor='nao-eh-dict', valores={})
         validador.eh_valido.should.be.equal(False)
         validador.erros.should.contain('dados_invalidos')
         validador.erros['dados_invalidos'].should.be.equal(u'Os dados do boleto devem ser em formato de dicionário')
 
     def test_deve_adicionar_erro_para_atributos_faltando(self):
-        validador = cadastro.BoletoValidador(valor={'sem_atributos': 1})
+        validador = cadastro.BoletoValidador(valor={'sem_atributos': 1}, valores={})
         validador.eh_valido.should.be.equal(False)
         validador.erros.should.contain('atributos')
         validador.erros['atributos'].should.contain(u"Não foi enviado o atributo empresa_beneficiario no boleto {'sem_atributos': 1}")
@@ -94,7 +94,7 @@ class ValidadorBoleto(unittest.TestCase):
             'linha_2': None,
             'linha_3': None,
         }
-        validador = cadastro.BoletoValidador(valor=boleto)
+        validador = cadastro.BoletoValidador(valor=boleto, valores={})
         validador.eh_valido.should.be.equal(False)
         validador.erros.should.be.equal({'empresa_cnpj': u'CPF/CNPJ inválido. Deve ter 14 digitos para CNPJ ou 11 para CPF'})
 
@@ -115,7 +115,7 @@ class ValidadorBoleto(unittest.TestCase):
             'linha_2': None,
             'linha_3': None,
         }
-        validador = cadastro.BoletoValidador(valor=boleto)
+        validador = cadastro.BoletoValidador(valor=boleto, valores={})
         validador.eh_valido.should.be.equal(True)
         validador.erros.should.be.empty
 
@@ -136,7 +136,7 @@ class ValidadorBoleto(unittest.TestCase):
             'linha_2': None,
             'linha_3': None,
         }
-        validador = cadastro.BoletoValidador(valor=boleto)
+        validador = cadastro.BoletoValidador(valor=boleto, valores={})
         validador.eh_valido.should.be.equal(True)
         validador.erros.should.be.empty
 
@@ -157,7 +157,7 @@ class ValidadorBoleto(unittest.TestCase):
             'linha_2': None,
             'linha_3': None,
         }
-        validador = cadastro.BoletoValidador(valor=boleto)
+        validador = cadastro.BoletoValidador(valor=boleto, valores={})
         validador.eh_valido.should.be.equal(False)
         validador.erros.should.be.equal({'banco_agencia': u'Informação inválida. Deve conter apenas digitos.'})
 
@@ -178,7 +178,7 @@ class ValidadorBoleto(unittest.TestCase):
             'linha_2': None,
             'linha_3': None,
         }
-        validador = cadastro.BoletoValidador(valor=boleto)
+        validador = cadastro.BoletoValidador(valor=boleto, valores={})
         validador.eh_valido.should.be.equal(False)
         validador.erros.should.be.equal({'dias_vencimento': u'Dias para o vencimento deve ser maior que 0 (zero).'})
 
@@ -199,7 +199,7 @@ class ValidadorBoleto(unittest.TestCase):
             'linha_2': None,
             'linha_3': None,
         }
-        validador = cadastro.BoletoValidador(valor=boleto)
+        validador = cadastro.BoletoValidador(valor=boleto, valores={})
         validador.eh_valido.should.be.equal(False)
         validador.erros.should.be.equal({'dias_vencimento': u'Dias para o vencimento deve ser maior que 0 (zero).'})
 
@@ -220,7 +220,7 @@ class ValidadorBoleto(unittest.TestCase):
             'linha_2': None,
             'linha_3': None,
         }
-        validador = cadastro.BoletoValidador(valor=boleto)
+        validador = cadastro.BoletoValidador(valor=boleto, valores={})
         validador.eh_valido.should.be.equal(False)
         validador.erros.should.be.equal({'dias_vencimento': u'Dias para o vencimento deve ser maior que 0 (zero).'})
 
@@ -241,7 +241,7 @@ class ValidadorBoleto(unittest.TestCase):
             'linha_2': None,
             'linha_3': None,
         }
-        validador = cadastro.BoletoValidador(valor=boleto)
+        validador = cadastro.BoletoValidador(valor=boleto, valores={})
         validador.eh_valido.should.be.equal(False)
         validador.erros.should.be.equal({'banco_conta': u'Informação inválida. Deve conter apenas digitos.'})
 
@@ -262,7 +262,7 @@ class ValidadorBoleto(unittest.TestCase):
             'linha_2': None,
             'linha_3': None,
         }
-        validador = cadastro.BoletoValidador(valor=boleto)
+        validador = cadastro.BoletoValidador(valor=boleto, valores={})
         validador.eh_valido.should.be.equal(False)
         validador.erros.should.be.equal({'banco_convenio': u'Informação inválida. Deve conter apenas digitos.'})
 
@@ -283,7 +283,7 @@ class ValidadorBoleto(unittest.TestCase):
             'linha_2': None,
             'linha_3': None,
         }
-        validador = cadastro.BoletoValidador(valor=boleto)
+        validador = cadastro.BoletoValidador(valor=boleto, valores={})
         validador.eh_valido.should.be.equal(False)
         validador.erros.should.be.equal({'banco_convenio': u'Certifique-se de que o valor tenha 6, 7 ou 8 caracteres (ele possui 3).'})
 
@@ -304,7 +304,7 @@ class ValidadorBoleto(unittest.TestCase):
             'linha_2': None,
             'linha_3': None,
         }
-        validador = cadastro.BoletoValidador(valor=boleto)
+        validador = cadastro.BoletoValidador(valor=boleto, valores={})
         validador.eh_valido.should.be.equal(True)
         validador.erros.should.be.empty
 
@@ -325,7 +325,7 @@ class ValidadorBoleto(unittest.TestCase):
             'linha_2': None,
             'linha_3': None,
         }
-        validador = cadastro.BoletoValidador(valor=boleto)
+        validador = cadastro.BoletoValidador(valor=boleto, valores={})
         validador.eh_valido.should.be.equal(True)
         validador.erros.should.be.empty
 
@@ -346,7 +346,7 @@ class ValidadorBoleto(unittest.TestCase):
             'linha_2': None,
             'linha_3': None,
         }
-        validador = cadastro.BoletoValidador(valor=boleto)
+        validador = cadastro.BoletoValidador(valor=boleto, valores={})
         validador.eh_valido.should.be.equal(True)
         validador.erros.should.be.empty
 
@@ -367,7 +367,7 @@ class ValidadorBoleto(unittest.TestCase):
             'linha_2': None,
             'linha_3': None,
         }
-        validador = cadastro.BoletoValidador(valor=boleto)
+        validador = cadastro.BoletoValidador(valor=boleto, valores={})
         validador.eh_valido.should.be.equal(True)
         validador.erros.should.be.empty
 
@@ -388,7 +388,7 @@ class ValidadorBoleto(unittest.TestCase):
             'linha_2': None,
             'linha_3': None,
         }
-        validador = cadastro.BoletoValidador(valor=boleto)
+        validador = cadastro.BoletoValidador(valor=boleto, valores={})
         validador.eh_valido.should.be.equal(True)
         validador.erros.should.be.empty
 
@@ -409,7 +409,7 @@ class ValidadorBoleto(unittest.TestCase):
             'linha_2': None,
             'linha_3': None,
         }
-        validador = cadastro.BoletoValidador(valor=boleto)
+        validador = cadastro.BoletoValidador(valor=boleto, valores={})
         validador.eh_valido.should.be.equal(False)
         validador.erros.should.be.equal({'banco_convenio': u'Certifique-se de que o valor tenha 7 caracteres (ele possui 8).'})
 
@@ -430,7 +430,7 @@ class ValidadorBoleto(unittest.TestCase):
             'linha_2': None,
             'linha_3': None,
         }
-        validador = cadastro.BoletoValidador(valor=boleto)
+        validador = cadastro.BoletoValidador(valor=boleto, valores={})
         validador.eh_valido.should.be.equal(False)
         validador.erros.should.be.equal({'banco_convenio': u'Certifique-se de que o valor tenha 7 caracteres (ele possui 6).'})
 
@@ -451,7 +451,7 @@ class ValidadorBoleto(unittest.TestCase):
             'linha_2': None,
             'linha_3': None,
         }
-        validador = cadastro.BoletoValidador(valor=boleto)
+        validador = cadastro.BoletoValidador(valor=boleto, valores={})
         validador.eh_valido.should.be.equal(False)
         validador.erros.should.be.equal({'banco_conta': u'Certifique-se de que o valor tenha 5 caracteres (ele possui 4).'})
 
@@ -472,7 +472,7 @@ class ValidadorBoleto(unittest.TestCase):
             'linha_2': None,
             'linha_3': None,
         }
-        validador = cadastro.BoletoValidador(valor=boleto)
+        validador = cadastro.BoletoValidador(valor=boleto, valores={})
         validador.eh_valido.should.be.equal(False)
         validador.erros.should.be.equal({'banco_conta': u'Certifique-se de que o valor tenha 7 caracteres (ele possui 9).'})
 
@@ -493,7 +493,7 @@ class ValidadorBoleto(unittest.TestCase):
             'linha_2': None,
             'linha_3': None,
         }
-        validador = cadastro.BoletoValidador(valor=boleto)
+        validador = cadastro.BoletoValidador(valor=boleto, valores={})
         validador.eh_valido.should.be.equal(False)
         validador.erros.should.be.equal({'banco_conta': u'Certifique-se de que o valor tenha 6 caracteres (ele possui 5).'})
 
@@ -514,7 +514,7 @@ class ValidadorBoleto(unittest.TestCase):
             'linha_2': None,
             'linha_3': None,
         }
-        validador = cadastro.BoletoValidador(valor=boleto)
+        validador = cadastro.BoletoValidador(valor=boleto, valores={})
         validador.eh_valido.should.be.equal(False)
         validador.erros.should.be.equal({'banco_conta': u'Certifique-se de que o valor tenha 6 caracteres (ele possui 5).'})
 
@@ -535,7 +535,7 @@ class ValidadorBoleto(unittest.TestCase):
             'linha_2': None,
             'linha_3': None,
         }
-        validador = cadastro.BoletoValidador(valor=boleto)
+        validador = cadastro.BoletoValidador(valor=boleto, valores={})
         validador.eh_valido.should.be.equal(False)
         validador.erros.should.be.equal({'banco_conta': u'Certifique-se de que o valor tenha 8 caracteres (ele possui 9).'})
 
@@ -556,7 +556,7 @@ class ValidadorBoleto(unittest.TestCase):
             'linha_2': None,
             'linha_3': None,
         }
-        validador = cadastro.BoletoValidador(valor=boleto)
+        validador = cadastro.BoletoValidador(valor=boleto, valores={})
         validador.eh_valido.should.be.equal(False)
         validador.erros.should.be.equal({'banco_conta': u'Certifique-se de que o valor tenha 5 caracteres (ele possui 4).'})
 
@@ -577,33 +577,33 @@ class ValidadorBoleto(unittest.TestCase):
             'linha_2': 'Linha 2',
             'linha_3': 'Linha 3',
         }
-        validador = cadastro.BoletoValidador(valor=boleto)
+        validador = cadastro.BoletoValidador(valor=boleto, valores={})
         validador.eh_valido.should.be.equal(True)
         validador.erros.should.be.empty
 
 
 class ValidarDesconto(unittest.TestCase):
     def test_deve_validar_maior_que_100(self):
-        validador = cadastro.DescontoValidador(valor='123.94')
+        validador = cadastro.DescontoValidador(valor='123.94', valores={})
         validador.eh_valido.should.be.equal(False)
         validador.erros.should.be.equal(u'Porcentagem inválida. Insira um valor entre 0% e 100%.')
 
     def test_deve_validar_menor_que_0(self):
-        validador = cadastro.DescontoValidador(valor='-0.5')
+        validador = cadastro.DescontoValidador(valor='-0.5', valores={})
         validador.eh_valido.should.be.equal(False)
         validador.erros.should.be.equal(u'Porcentagem inválida. Insira um valor entre 0% e 100%.')
 
     def test_deve_validar_none(self):
-        validador = cadastro.DescontoValidador(valor=None)
+        validador = cadastro.DescontoValidador(valor=None, valores={})
         validador.eh_valido.should.be.equal(False)
         validador.erros.should.be.equal(u'Porcentagem inválida. Insira um valor entre 0% e 100%.')
 
     def test_deve_validar_se_valor_gerar_value_error(self):
-        validador = cadastro.DescontoValidador(valor='asdds')
+        validador = cadastro.DescontoValidador(valor='asdds', valores={})
         validador.eh_valido.should.be.equal(False)
         validador.erros.should.be.equal(u'Porcentagem inválida. Insira um valor entre 0% e 100%.')
 
     def test_deve_retornar_ok_se_valor_for_certo(self):
-        validador = cadastro.DescontoValidador(valor='50.43444')
+        validador = cadastro.DescontoValidador(valor='50.43444', valores={})
         validador.eh_valido.should.be.equal(True)
         validador.erros.should.be.empty
