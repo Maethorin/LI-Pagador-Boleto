@@ -171,7 +171,7 @@ class BoletoEntregandoPagamento(unittest.TestCase):
         entrega = servicos.EntregaPagamento(234)
         entrega.malote = self.malote
         entrega.processa_dados_pagamento()
-        entrega.resultado.should.be.equal({'dados': 'BOLETO_PDF'})
+        entrega.resultado.should.be.equal({'dados': 'BOLETO_PDF', 'pago': True})
 
     @mock.patch('pagador.servicos.EntregaPagamento.define_pedido_e_configuracao')
     def test_deve_definir_pedido_e_configuracao(self, define_mock):

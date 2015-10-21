@@ -109,4 +109,4 @@ class EntregaPagamento(servicos.EntregaPagamento):
             boleto_pdf.drawBoleto(boleto)
             boleto_pdf.save()
             f_pdf.seek(0)
-            self.resultado = {'dados': unicode(f_pdf.read(), 'ISO-8859-1')}
+            self.resultado = {'dados': unicode(f_pdf.read(), 'ISO-8859-1'), 'pago': True}
