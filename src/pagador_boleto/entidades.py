@@ -50,8 +50,16 @@ class Malote(entidades.Malote):
         if complemento:
             complemento = u', {}'.format(complemento)
         return u'{}, {}{} - {}, {} / {} - CEP: {}'.format(
-            pedido.endereco_pagamento['endereco'], pedido.endereco_pagamento['numero'], complemento, pedido.endereco_pagamento['bairro'],
-            pedido.endereco_pagamento['cidade'], pedido.endereco_pagamento['estado'], pedido.endereco_pagamento['cep'])
+            pedido.endereco_pagamento['endereco'], pedido.endereco_pagamento['numero'],
+            complemento, pedido.endereco_pagamento['bairro'], pedido.endereco_pagamento['cidade'],
+            pedido.endereco_pagamento['estado'], pedido.endereco_pagamento['cep']
+        )
+
+    def nome_endereco_entrega(self, pedido):
+        if pedido.endereco_entrega['tipo'] == "PF":
+            return pedido.endereco_entrega['nome']
+        else:
+            return pedido.endereco_entrega['razao_social']
 
     def _dispara_excecao(self, pedido, mensagem):
         if pedido.numero == 236:
@@ -82,8 +90,9 @@ class Malote(entidades.Malote):
                         valor = ''
                     setattr(self, chave, valor)
         except KeyError:
-            self._dispara_excecao(pedido, u'A configuração do boleto para na loja {} não está preenchida corretamente.'.format(self.configuracao.loja_id))
-        self.sacado = [pedido.endereco_entrega['nome'], self.endereco_completo(pedido)]
+            msg = u'A configuração do boleto para na loja {} não está preenchida corretamente.'
+            self._dispara_excecao(pedido, msg.format(self.configuracao.loja_id))
+        self.sacado = [self.nome_endereco_entrega(pedido), self.endereco_completo(pedido)]
         self.sacado_documento = pedido.cliente_documento
         self.formato = TipoBoleto.linha_digitavel
         if 'formato' in dados:
